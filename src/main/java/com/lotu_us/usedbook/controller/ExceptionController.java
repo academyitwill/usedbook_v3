@@ -19,13 +19,14 @@ public class ExceptionController {
                 .body(exception.getResponse());
     }
 
-    @ExceptionHandler(PasswordNotEqualException.class)  //예외 종류마다 처리할 메서드를 정의한다
-    public ResponseEntity passwordNotEqualExceptionHandler(PasswordNotEqualException exception){
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setField("password");
-        errorResponse.setObjectName("");
-        errorResponse.setCode("password.notequal");
-        errorResponse.setDefaultMessage(exception.getMessage());
+    //RequestParam, PathVariable Validated
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity constraintViolationExceptionHandler(ConstraintViolationException exception){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .cause("url-params")
+                .code("parameter.validated")
+                .message(exception.getMessage()).build();
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
