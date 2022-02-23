@@ -22,8 +22,8 @@ public class MemberApiController {
     @PostMapping("/join")
     @ReturnBindingResultError
     public ResponseEntity join(@Validated @ModelAttribute MemberDTO.Join memberDTO, BindingResult bindingResult){
-        memberService.join(memberDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        Long memberId = memberService.join(memberDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(memberId);
     }
 
     @PutMapping("/update/{memberId}/nickname/{updateNickname}")

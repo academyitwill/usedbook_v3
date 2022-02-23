@@ -16,7 +16,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public void join(MemberDTO.Join memberDTO) {
+    public Long join(MemberDTO.Join memberDTO) {
         String encodePassword = bCryptPasswordEncoder.encode(memberDTO.getPassword());
 
         Member member = Member.JoinForm()
@@ -25,6 +25,7 @@ public class MemberService {
                 .password(encodePassword).build();
 
         memberRepository.save(member);
+        return member.getId();
     }
 
 
