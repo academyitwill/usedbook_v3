@@ -17,9 +17,9 @@ public class CustomException extends RuntimeException{
     }
 
     @Builder(builderClassName = "localError", builderMethodName = "localError")
-    public CustomException(String causeTarget, String code, String message, HttpStatus httpStatus){
+    public CustomException(String cause, String code, String message, HttpStatus httpStatus){
         errorResponse = ErrorResponse.builder()
-                .cause(causeTarget)
+                .cause(cause)
                 .code(code)
                 .message(message)
                 .httpStatus(httpStatus).build();

@@ -36,7 +36,7 @@ public class MemberService {
 
         if(member.getNickname().equals(updateNickname)){
             throw CustomException.localError()
-                    .causeTarget("nickname")
+                    .cause("nickname")
                     .code("nickname.equal.previous")
                     .message("닉네임이 이전과 같습니다.")
                     .httpStatus(HttpStatus.BAD_REQUEST).build();
