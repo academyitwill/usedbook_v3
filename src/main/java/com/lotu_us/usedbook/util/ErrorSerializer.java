@@ -18,10 +18,10 @@ public class ErrorSerializer extends JsonSerializer<Errors> {
         errors.getFieldErrors().forEach(e->{
             try{
                 gen.writeStartObject();
-                gen.writeStringField("field", e.getField());
-                gen.writeStringField("objectName", e.getObjectName());
+                gen.writeStringField("cause", e.getField());
+//                gen.writeStringField("objectName", e.getObjectName());
                 gen.writeStringField("code", e.getCode());
-                gen.writeStringField("defaultMessage", e.getDefaultMessage());
+                gen.writeStringField("message", e.getDefaultMessage());
 //                Object rejectedValue = e.getRejectedValue();
 //                if (rejectedValue != null) {
 //                    gen.writeStringField("rejectedValue",rejectedValue.toString());
@@ -37,9 +37,9 @@ public class ErrorSerializer extends JsonSerializer<Errors> {
         errors.getGlobalErrors().forEach(e->{
             try{
                 gen.writeStartObject();
-                gen.writeStringField("objectName", e.getObjectName());
+                gen.writeStringField("cause", e.getObjectName());
                 gen.writeStringField("code", e.getCode());
-                gen.writeStringField("defaultMessage", e.getDefaultMessage());
+                gen.writeStringField("message", e.getDefaultMessage());
                 gen.writeEndObject();
             }catch(IOException e1){
                 e1.printStackTrace();
