@@ -1,4 +1,4 @@
-package com.lotu_us.usedbook.controller;
+package com.lotu_us.usedbook.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
