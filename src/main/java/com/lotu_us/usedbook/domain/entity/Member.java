@@ -38,4 +38,8 @@ public class Member {
         this.password = password;
         this.provider = provider;
     }
+
+    public void changeNickname(String updateNickname) {
+        this.nickname = updateNickname;
+    }
 }

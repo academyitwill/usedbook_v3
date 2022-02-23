@@ -3,7 +3,10 @@ package com.lotu_us.usedbook.service;
 import com.lotu_us.usedbook.domain.dto.MemberDTO;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.repository.MemberRepository;
+import com.lotu_us.usedbook.util.exception.ErrorCode;
+import com.lotu_us.usedbook.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +17,6 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void join(MemberDTO.Join memberDTO) {
-
         String encodePassword = bCryptPasswordEncoder.encode(memberDTO.getPassword());
 
         Member member = Member.JoinForm()
@@ -23,5 +25,22 @@ public class MemberService {
                 .password(encodePassword).build();
 
         memberRepository.save(member);
+    }
+
+
+    public void updateNickname(Long memberId, String updateNickname) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> {
+            throw CustomException.globalError(ErrorCode.ID_NOT_FOUND);
+        });
+
+        if(member.getNickname().equals(updateNickname)){
+            throw CustomException.localError()
+                    .causeTarget("nickname")
+                    .code("nickname.equal.previous")
+                    .message("닉네임이 이전과 같습니다.")
+                    .httpStatus(HttpStatus.BAD_REQUEST).build();
+        }
+
+        member.changeNickname(updateNickname);
     }
 }
