@@ -23,8 +23,8 @@ public class ReturnBindingResultErrorAspect {
     public Object aspectAround(ProceedingJoinPoint joinPoint) throws Throwable {
         String type = joinPoint.getSignature().getDeclaringTypeName();
         String method = joinPoint.getSignature().getName();
-        log.info("BindingResultAOP type={}", type);
-        log.info("BindingResultAOP method={}", method);
+        log.info("BindingResultAOP Run : type={}", type);
+        log.info("BindingResultAOP Run : method={}", method);
 
         Object[] args = joinPoint.getArgs();
         //메서드에 들어가는 파라미터들 가져오기
@@ -34,6 +34,7 @@ public class ReturnBindingResultErrorAspect {
                 BindingResult bindingResult = (BindingResult) arg;
 
                 if(bindingResult.hasErrors()){
+                    log.info("BindingResultAOP : bindingResult.hasErrors() == true");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult);
                 }
             }
