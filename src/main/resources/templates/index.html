@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head.html :: head"></th:block>
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <th:block th:replace="fragments/slider.html :: slider-head"></th:block>
+</head>
+<body>
+
+<div th:replace="fragments/navbar.html :: navbar"></div>
+
+<div class="banner">
+    <div class="center">
+        <div class="title">
+            <p style="font-size:1.8em;">중고서적거래 커뮤니티</p>
+            <p style="font-size:1.5em;">📖책방</p>
+        </div>
+        <form id="searchForm" th:action="@{/posts(srange=${param.srange}, stext=${param.stext}) }" method="get">
+            <div class="inputbox">
+                <input type="hidden" name="srange" value="1">
+                <input type="text" name="stext" placeholder="제목을 검색해주세요">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <h3 class="mt-5">소설</h3>
+    <div class="slider-container novel">
+        <div th:replace="fragments/slider :: card-slider('sliderA')"></div>
+    </div>
+
+    <h3 class="mt-5">인문</h3>
+    <div class="slider-container humanities">
+        <div th:replace="fragments/slider :: card-slider('sliderB')"></div>
+    </div>
+
+    <h3 class="mt-5">만화</h3>
+    <div class="slider-container cartoon">
+        <div th:replace="fragments/slider :: card-slider('sliderC')"></div>
+    </div>
+</div>
+
+
+<footer th:replace="fragments/footer.html :: footer"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<th:block th:replace="fragments/slider.html :: slider-script"></th:block>
+<script src="/js/index.js"></script>
+</body>
+</html>

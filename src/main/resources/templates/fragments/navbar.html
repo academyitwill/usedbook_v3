@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head.html :: head"></th:block>
+    <title>Title</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md" th:fragment="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">📖<span>책방</span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/posts}" th:classappend="${category}=='all' ? 'custom-active'">통합검색</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/posts/novel}" th:classappend="${category}=='novel' ? 'custom-active'">소설</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/posts/humanities}" th:classappend="${category}=='humanities' ? 'custom-active'">인문</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/posts/cartoon}" th:classappend="${category}=='cartoon' ? 'custom-active'">만화</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="login-position">
+            <a class="btn btn btn-outline-primary" href="../member/login.html" th:href="@{/login}"
+               th:if="${session.loginMember == null}">
+                <i class="fas fa-sign-in-alt"></i> LOGIN
+            </a>
+            <div class="dropdown" th:if="${session.loginMember != null}">
+                <a class="btn btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span th:text="${session.loginMember.nickname}">닉네임</span> 님
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" th:href="@{/dashboard/myInfo}"><i class="fas fa-user"></i> 대시보드</a></li>
+                    <li><a class="dropdown-item" th:href="@{/post}"><i class="fas fa-file-alt"></i> 글작성하기</a></li>
+                    <li><a class="dropdown-item" th:href="@{/order/basket}"><i class="fas fa-shopping-basket"></i> 장바구니</a></li>
+                    <li><a class="dropdown-item" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

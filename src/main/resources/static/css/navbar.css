@@ -1,0 +1,25 @@
+.navbar{
+    color:black;
+    background-color:white;
+    border-bottom:1px solid #BDBDBD;
+}
+.navbar .container-fluid{ max-width:1200px!important; }
+.navbar .container-fluid .navbar-nav .nav-item .nav-link{ color:black; }
+.navbar .container-fluid .navbar-toggler{ height:40px; border-color:black; }
+.navbar .container-fluid .login-position{ display:flex; flex-direction:row; }
+.navbar .container-fluid .login-position .btn{ height:40px; margin-left:0.5rem; }
+.navbar .container-fluid .login-position .dropdown-menu[data-bs-popper]{
+    top:100%;
+    right:0px!important;
+    left:auto!important;
+    margin-top:0.125rem;
+    padding-right: var(--bs-gutter-x, .75rem);
+}
+
+@media (max-width:767px){
+    .login-position{
+        position:absolute;
+        top:0.5em;
+        right:4rem;
+    }
+}

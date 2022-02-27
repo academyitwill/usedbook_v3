@@ -1,0 +1,12 @@
+.sidebar { max-width:230px; }
+.sidebar .nav li { width:100%; }
+.sidebar .mobile i { font-size:1.3em; }
+
+@media screen and (min-width: 767px) {
+    .sidebar { display:block; }
+    .sidebar.mobile { display:none; }
+}
+@media screen and (max-width: 767px) {
+    .sidebar { display:none; }
+    .sidebar.mobile { display:block; }
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head.html :: head"></th:block>
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <style>
+        .container .col { margin:0px; padding:0px; }
+        .container .sidebarCol { max-width:fit-content; height:calc(100vh - 57px); background-color: #f4f4f4; }
+
+        #myCommentsForm { width:90%; margin:auto; }
+        #myCommentsForm h3 { text-align:center; font-weight:bold; margin-top:40px; }
+        #myCommentsForm .row { margin:0px; padding:0px; }
+
+        table { font-size:0.8em; white-space:nowrap; table-layout:fixed; }
+        table th, table td { padding:0.4em!important; text-align:center; vertical-align:baseline; text-overflow:ellipsis; overflow:hidden; word-break: break-word; }
+        table tbody tr td:nth-child(5){ font-size:0.9em; }
+        table tbody tr td:nth-child(3){ text-align:left; }
+        table tbody tr td:nth-child(4){ text-align:left; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar"></div>
+<div class="container">
+    <div class="row">
+
+        <div class="col sidebarCol border-end">
+            <div th:replace="fragments/sidebar.html :: sidebar('myComments')"></div>
+        </div>
+
+        <div class="col">
+            <div id="myCommentsForm">
+                <h3>내 댓글</h3><br>
+                <table class="table table-striped table-hover table-bordered mt-4">
+                    <colgroup>
+                        <col style="width:10%;">
+                        <col style="width:15%;">
+                        <col>
+                        <col>
+                        <col style="width:17%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th scope="col" >번호</th>
+                        <th scope="col" id="salestatus" class="desc">게시글상태<span>↓</span></th>
+                        <th scope="col" id="title" class="desc">게시글제목<span>↓</span></th>
+                        <th scope="col" id="content" class="desc">댓글내용<span>↓</span></th>
+                        <th scope="col" id="createtime" class="desc">댓글작성날짜<span>↓</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                <!--/* 페이지 */-->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-4">
+
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="/js/pagination.js"></script>
+<script src="/js/dashboard/myComments.js"></script>
+</body>
+</html>

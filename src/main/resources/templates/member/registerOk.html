@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head.html :: head"></th:block>
+    <title>회원가입 성공</title>
+    <link rel="stylesheet" href="../css/member/registerOk.css">
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar"></div>
+<div class="container">
+
+    <div class="div_center">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+
+        <p style="text-align: center; font-size: 1.6rem; margin-top: 10px;">🎉 회원가입을 축하합니다.</p>
+        <a class="mt-4 btn btn-lg rounded-4 btn-primary" href="/login">로그인하러가기</a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

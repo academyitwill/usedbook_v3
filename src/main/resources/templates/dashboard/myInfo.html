@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head.html :: head"></th:block>
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <style>
+        .container .col { margin:0px; padding:0px; }
+        .container .sidebarCol { max-width:fit-content; min-height:calc(100vh - 57px); background-color: #f4f4f4; }
+
+        #myInfoForm { width:80%; max-width:400px; margin:auto; }
+        #myInfoForm h3 { text-align:center; font-weight:bold; margin-top:40px; }
+        #myInfoForm .row { margin:0px; padding:0px; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar"></div>
+<div class="container">
+    <div class="row">
+
+        <div class="col sidebarCol border-end">
+            <div th:replace="fragments/sidebar.html :: sidebar('myInfo')"></div>
+        </div>
+
+        <div class="col">
+            <div id="myInfoForm">
+                <h3>회원정보</h3><br>
+                <div id="id" th:text="${loginMember.id}" style="display:none;"></div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="text" class="form-control" id="email" th:value="${loginMember.email}" readonly>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <label for="nickname" class="form-label">닉네임</label>
+                    <input type="text" class="form-control" id="nickname" th:value="${loginMember.nickname}">
+                    <div id="nicknameHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div class="text-center">
+                    <a class="mb-2 mt-1 btn rounded-4 btn-primary" type="button" onClick="nickNameUpdate()">닉네임 수정</a>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <label for="oldPassword" class="form-label">현재 비밀번호</label>
+                    <input type="password" class="form-control" id="oldPassword">
+                    <div id="oldPasswordHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">새 비밀번호</label>
+                    <input type="password" class="form-control" id="newPassword">
+                    <div id="newPasswordHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="newPasswordConfirm" class="form-label">새 비밀번호 확인</label>
+                    <input type="password" class="form-control" id="newPasswordConfirm">
+                    <div id="newPasswordConfirmHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div class="text-center mb-5">
+                    <a class="mb-2 mt-1 btn rounded-4 btn-primary" type="button" onClick="passwordUpdate()">비밀번호 수정</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="../js/dashboard/myInfo.js"></script>
+</body>
+</html>
