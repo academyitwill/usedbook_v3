@@ -1,5 +1,6 @@
 package com.lotu_us.usedbook.domain.entity;
 
+import com.lotu_us.usedbook.domain.dto.MemberDTO;
 import com.lotu_us.usedbook.domain.enums.Role;
 import lombok.*;
 
@@ -42,4 +43,9 @@ public class Member {
     public void changeNickname(String updateNickname) {
         this.nickname = updateNickname;
     }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
 }

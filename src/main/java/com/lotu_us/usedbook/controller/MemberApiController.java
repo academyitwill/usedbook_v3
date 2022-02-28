@@ -19,6 +19,9 @@ import javax.validation.constraints.Size;
 public class MemberApiController {
     private final MemberService memberService;
 
+    /**
+     * 회원가입
+     */
     @PostMapping("/join")
     @ReturnBindingResultError
     public ResponseEntity join(@Validated @RequestBody MemberDTO.Join memberDTO, BindingResult bindingResult){
@@ -26,6 +29,9 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.OK).body(memberId);
     }
 
+    /**
+     * 닉네임 수정
+     */
     @PutMapping("/update/{memberId}/nickname/{updateNickname}")
     public ResponseEntity updateNickname(
             @PathVariable Long memberId,
@@ -33,8 +39,31 @@ public class MemberApiController {
     ){
         //@PathVariable은 notnull조건을 추가하지 않아도된다. url에 입력하지 않으면 아예 다른 url이 되어버리니까!
         memberService.updateNickname(memberId, updateNickname);
-
         return ResponseEntity.status(HttpStatus.OK).body("ok");
     }
+
+    /**
+     * 비밀번호 수정
+     */
+    @PutMapping("/update/{memberId}/password")
+    @ReturnBindingResultError
+    public ResponseEntity updatePassword(
+            @PathVariable Long memberId,
+            @Validated @RequestBody MemberDTO.UpdatePassword memberDTO, BindingResult bindingResult
+    ){
+        memberService.updatePassword(memberId, memberDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("ok");
+    }
+
+    /**
+     * 회원조회
+     */
+    @GetMapping("/{memberId}")
+    @ReturnBindingResultError
+    public ResponseEntity detail(@PathVariable Long memberId){
+        MemberDTO.Response response = memberService.detail(memberId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
 }
