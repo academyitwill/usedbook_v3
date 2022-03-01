@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="fragments/head.html :: head"></th:block>
     <title>Title</title>
     <style>
-        #loginForm{ width:80%; max-width:400px; margin:auto;}
-        #loginForm h1{ text-align:center; font-weight:bold; margin-top:40px; }
+        #loginForm{ width:80%; max-width:350px; margin:auto;}
+        #loginForm h2{ text-align:center; font-weight:bold; margin-top:40px; }
         #loginForm #loginHelp{ display:none; }
     </style>
 </head>
@@ -13,8 +13,8 @@
 <div th:replace="fragments/navbar.html :: navbar"></div>
 <div class="container">
 
-    <form id="loginForm" class="needs-validation"  method="post" th:action="@{/login(redirectURL=${param.redirectURL})}">
-        <h1>로그인</h1><br>
+    <form id="loginForm" class="needs-validation" th:action="@{/loginProcessing}" method="post" >
+        <h2>로그인</h2><br>
 
         <div class="form-floating mb-3">
             <input type="text" class="form-control rounded-4" id="email" name="email">
@@ -25,35 +25,46 @@
             <label for="password">비밀번호</label>
         </div>
 
-        <div id="emailHelp" class="mb-3" style="display:none;">확인주세요</div>
-        <div id="passwordHelp" class="mb-3" style="display:none;">확인주세요</div>
+        <div class="alert alert-danger" role="alert" style="padding:0.5em;"
+             th:if="${#request.getAttribute('loginFailMsg') != null}">
+            <div th:text="${#request.getAttribute('loginFailMsg')}"></div>
+        </div>
 
-        <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="button" onclick="loginSubmit()">로그인</button>
+
+        <button class="w-100 mb-2 btn rounded-4 btn-primary" type="submit" >로그인</button>
         <div class="text-center mt-2">
             <a class="link-secondary me-2" href="/findPassword">비밀번호 찾기</a>
-            <a class="link-secondary"      href="/register">회원가입</a>
+            <a class="link-secondary"      href="/join">회원가입</a>
         </div>
 
         <hr class="my-4">
-        <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-        <button class="w-100 py-2 mb-2 btn btn-outline-warning rounded-4" type="submit">
-            <img src="../img/kakaotalk.svg"  style="width:1.1em;"/>
-            Sign up with Kakao
-        </button>
-        <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-4" type="submit">
-            <i class="fab fa-facebook"></i>
-            Sign up with Facebook
-        </button>
-        <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-4" type="submit">
-            <i class="fab fa-github"></i>
-            Sign up with GitHub
-        </button>
+        <div class="fs-6 text-center mb-3">다른 계정으로 로그인</div>
+
+        <div class="text-center">
+            <a href="/oauth2/authorization/google" class="me-1" style="text-decoration:none;">
+                <img th:src="@{/img/google/google_icon.svg}" style="height:3.5em; border-radius: 0.4em; border: 2px solid #dddddd; padding: 0.4em;"/>
+            </a>
+
+            <a href="/oauth2/authorization/naver" class="me-1" style="text-decoration:none;">
+                <img th:src="@{/img/naver/naver_icon.png}" style="height:3.5em;"/>
+            </a>
+
+            <a href="/oauth2/authorization/kakao" class="me-1" style="text-decoration:none;">
+                <img th:src="@{/img/kakao/kakao_icon.svg}" style="height:3.5em;"/>
+            </a>
+        </div>
+<!--        class="w-100 py-2 mb-2 btn btn-outline-warning rounded-4" -->
     </form>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script src="../js/validutil.js"></script>
-<script src="../js/member/login.js"></script>
+<script>
+//공백제거
+$("#email, #password").on("keyup change", function(){
+    var str = this.value.replace(" ", "");
+    $(this).val(str);
+});
+</script>
 </body>
 </html>
