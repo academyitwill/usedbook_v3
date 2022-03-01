@@ -3,9 +3,11 @@ package com.lotu_us.usedbook.util;
 import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@NoArgsConstructor
 public class ErrorResponse {
     private String cause;
     private String code;
@@ -24,6 +26,7 @@ public class ErrorResponse {
         this.cause = errorCode.getCause();
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
+        this.httpStatus = errorCode.getHttpStatus();
     }
 
 }
