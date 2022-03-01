@@ -1,4 +1,4 @@
-package com.lotu_us.usedbook.util;
+package com.lotu_us.usedbook.util.error;
 
 import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.Builder;

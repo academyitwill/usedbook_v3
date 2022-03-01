@@ -1,4 +1,4 @@
-package com.lotu_us.usedbook.util;
+package com.lotu_us.usedbook.util.error;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

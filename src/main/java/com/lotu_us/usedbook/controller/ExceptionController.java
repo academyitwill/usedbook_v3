@@ -1,6 +1,6 @@
 package com.lotu_us.usedbook.controller;
 
-import com.lotu_us.usedbook.util.ErrorResponse;
+import com.lotu_us.usedbook.util.error.ErrorResponse;
 import com.lotu_us.usedbook.util.exception.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

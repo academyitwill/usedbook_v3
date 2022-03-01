@@ -1,6 +1,6 @@
 package com.lotu_us.usedbook.util.exception;
 
-import com.lotu_us.usedbook.util.ErrorResponse;
+import com.lotu_us.usedbook.util.error.ErrorResponse;
 
 public class CustomException extends RuntimeException{
 
