@@ -1,9 +1,9 @@
 package com.lotu_us.usedbook.controller;
 
 import com.lotu_us.usedbook.domain.dto.MemberDTO;
-import com.lotu_us.usedbook.domain.validation.annotation.Email;
-import com.lotu_us.usedbook.domain.validation.annotation.Nickname;
-import com.lotu_us.usedbook.domain.validation.annotation.Password;
+import com.lotu_us.usedbook.util.validation.annotation.Email;
+import com.lotu_us.usedbook.util.validation.annotation.Nickname;
+import com.lotu_us.usedbook.util.validation.annotation.Password;
 import com.lotu_us.usedbook.service.MemberService;
 import com.lotu_us.usedbook.util.aop.ReturnBindingResultError;
 import lombok.RequiredArgsConstructor;

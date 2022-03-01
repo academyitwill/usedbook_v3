@@ -1,7 +1,7 @@
-package com.lotu_us.usedbook.domain.validation.validator;
+package com.lotu_us.usedbook.util.validation.validator;
 
 
-import com.lotu_us.usedbook.domain.validation.annotation.Email;
+import com.lotu_us.usedbook.util.validation.annotation.Email;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;

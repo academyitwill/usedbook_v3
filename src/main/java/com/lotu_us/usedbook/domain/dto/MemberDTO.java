@@ -1,8 +1,8 @@
 package com.lotu_us.usedbook.domain.dto;
 
 import com.lotu_us.usedbook.domain.entity.Member;
-import com.lotu_us.usedbook.domain.validation.annotation.Email;
-import com.lotu_us.usedbook.domain.validation.annotation.Nickname;
+import com.lotu_us.usedbook.util.validation.annotation.Email;
+import com.lotu_us.usedbook.util.validation.annotation.Nickname;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

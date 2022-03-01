@@ -1,6 +1,6 @@
-package com.lotu_us.usedbook.domain.validation.annotation;
+package com.lotu_us.usedbook.util.validation.annotation;
 
-import com.lotu_us.usedbook.domain.validation.validator.MemberNicknameValidator;
+import com.lotu_us.usedbook.util.validation.validator.MemberNicknameValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
