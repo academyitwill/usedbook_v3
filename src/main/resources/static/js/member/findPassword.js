@@ -1,6 +1,6 @@
 
 const fields = ["email", "nickname"];
-const validUtil = new ValidUtil(fields);
+let validUtil = new ValidUtil(fields);
 
 
 function findSubmit(){
@@ -9,19 +9,18 @@ function findSubmit(){
 
     $.ajax({
         type:"post",
-        url:"/api/findPasswordCheck",
+        url:"/api/member/findPassword",
         contentType: 'application/json',
         data: JSON.stringify({
             "email":email,
             "nickname":nickname
         }),
         success: function(){
-            validUtil.successProcess();
-            $("#findForm").submit();
+            window.location.href='/findPasswordEmailSend';
         },
         error:function(error){
             validUtil.errorProcess(error.responseJSON);
-            console.clear();    //개발자도구에서 오류 안나오게 할 수 있음
+            //console.clear();    //개발자도구에서 오류 안나오게 할 수 있음
         }
     });
 }

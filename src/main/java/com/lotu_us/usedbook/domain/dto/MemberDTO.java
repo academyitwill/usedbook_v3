@@ -48,6 +48,18 @@ public class MemberDTO {
 
     @Getter
     @ToString
+    public static class findPassword {
+        @Email
+        private String email;
+
+        @Nickname
+        private String nickname;
+    }
+
+
+
+    @Getter
+    @ToString
     public static class Response{
         private Long id;
         private String nickname;

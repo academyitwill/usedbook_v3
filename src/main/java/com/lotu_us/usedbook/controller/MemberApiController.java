@@ -80,6 +80,16 @@ public class MemberApiController {
     }
 
     /**
+     * 비밀번호 찾기
+     */
+    @PostMapping("/findPassword")
+    @ReturnBindingResultError
+    public ResponseEntity findPassword(@Validated @RequestBody MemberDTO.findPassword memberDTO, BindingResult bindingResult){
+        memberService.findPassword(memberDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("ok");
+    }
+
+    /**
      * 회원조회
      */
     @GetMapping("/{memberId}")

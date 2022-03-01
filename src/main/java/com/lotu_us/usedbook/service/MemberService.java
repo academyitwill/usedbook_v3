@@ -121,4 +121,27 @@ public class MemberService {
         MemberDTO.Response response = MemberDTO.entityToDto(member);
         return response;
     }
+
+    /**
+     * 비밀번호 찾기
+     * @param memberDTO
+     * @exception : 일치하는 이메일 없으면 -> ErrorCode.EMAIL_NOT_FOUND
+     * @exception : 이메일의 member와 닉네임이 다르면 -> ErrorCode.NICKNAME_NOT_EQUAL
+     */
+    public void findPassword(MemberDTO.findPassword memberDTO) {
+        Member member = memberRepository.findByEmail(memberDTO.getEmail()).orElseThrow(() ->
+                new CustomException(ErrorCode.EMAIL_NOT_FOUND)
+        );
+
+        if(! member.getNickname().equals(memberDTO.getNickname())){
+            throw new CustomException(ErrorCode.NICKNAME_NOT_EQUAL);
+        }
+
+        //임시 비밀번호
+        UUID uid = UUID.randomUUID();
+        String tempPassword = uid.toString().substring(0,10) + "p2$";
+        member.changePassword(tempPassword);
+
+        customMailSender.sendFindPasswordMail(memberDTO, tempPassword);
+    }
 }
