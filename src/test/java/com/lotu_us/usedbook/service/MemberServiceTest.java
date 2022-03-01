@@ -32,9 +32,46 @@ class MemberServiceTest {
 
         //then
         Assertions.assertThat(memberId).isNotNull();
-        Member byEmail = memberRepository.findByEmail("12@12");
+        Member byEmail = memberRepository.findByEmail("12@12").orElse(null);
         Assertions.assertThat(byEmail.getNickname()).isEqualTo("12");
     }
+
+    @Test
+    @DisplayName("form 회원가입 실패 - 중복되는 이메일")
+    void join_Fail_Email_Duplicated(){
+        //given
+        MemberDTO.Join memberDTO = MemberDTO.Join.builder()
+                .nickname("12").password("12").email("12@12").build();
+        Long memberId = memberService.join(memberDTO);
+
+        //when
+        MemberDTO.Join memberDTO2 = MemberDTO.Join.builder()
+                .nickname("12").password("12").email("12@12").build();
+
+        //then
+        org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            Long memberId2 = memberService.join(memberDTO2);
+        });
+    }
+
+    @Test
+    @DisplayName("form 회원가입 실패 - 중복되는 닉네임")
+    void join_Fail_Nickname_Duplicated(){
+        //given
+        MemberDTO.Join memberDTO = MemberDTO.Join.builder()
+                .nickname("12").password("12").email("12@12").build();
+        Long memberId = memberService.join(memberDTO);
+
+        //when
+        MemberDTO.Join memberDTO2 = MemberDTO.Join.builder()
+                .nickname("12").password("12").email("13@13").build();
+
+        //then
+        org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            Long memberId2 = memberService.join(memberDTO2);
+        });
+    }
+
     //=========================================================================
 
     @Test
@@ -49,7 +86,7 @@ class MemberServiceTest {
         memberService.updateNickname(memberId, "12333");
 
         //then
-        Member byEmail = memberRepository.findByEmail("12@12");
+        Member byEmail = memberRepository.findByEmail("12@12").orElse(null);
         Assertions.assertThat(byEmail.getNickname()).isEqualTo("12333");
     }
 
@@ -99,7 +136,7 @@ class MemberServiceTest {
         memberService.updatePassword(memberId, updateDTO);
 
         //then
-        Member byEmail = memberRepository.findByEmail("12@12");
+        Member byEmail = memberRepository.findByEmail("12@12").orElse(null);
         Assertions.assertThat(byEmail.getPassword()).isEqualTo("133");
     }
 
