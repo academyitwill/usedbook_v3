@@ -3,24 +3,31 @@ package com.lotu_us.usedbook.service;
 import com.lotu_us.usedbook.domain.dto.MemberDTO;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.repository.MemberRepository;
-import com.lotu_us.usedbook.util.exception.ErrorCode;
+import com.lotu_us.usedbook.util.CustomMailSender;
 import com.lotu_us.usedbook.util.exception.CustomException;
+import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CustomMailSender customMailSender;
 
     /**
      * form회원가입
+     * @exception : 존재하는 이메일이라면 ErrorCode.EMAIL_DUPLICATED
+     * @exception : 존재하는 닉네임이라면 ErrorCode.NICKNAME_DUPLICATED
      */
     public Long join(MemberDTO.Join memberDTO) {
         String encodePassword = bCryptPasswordEncoder.encode(memberDTO.getPassword());
+        joinEmailDuplicatedCheck(memberDTO.getEmail());
+        joinNicknameDuplicatedCheck(memberDTO.getNickname());
 
         Member member = Member.JoinForm()
                 .email(memberDTO.getEmail())
@@ -32,23 +39,42 @@ public class MemberService {
     }
 
     /**
+     * form회원가입 - 이메일 중복체크
+     * @exception : 존재하는 이메일이라면 ErrorCode.EMAIL_DUPLICATED
+     */
+    public boolean joinEmailDuplicatedCheck(String email) {
+        memberRepository.findByEmail(email).ifPresent(m -> {
+            throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
+        });
+        return true;
+    }
+
+    /**
+     * form회원가입 - 닉네임 중복체크
+     * @exception : 존재하는 닉네임이라면 ErrorCode.NICKNAME_DUPLICATED
+     */
+    public boolean joinNicknameDuplicatedCheck(String nickname) {
+        memberRepository.findByNickname(nickname).ifPresent(m -> {
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        });
+        return true;
+    }
+
+
+    /**
      * 닉네임 수정
      * @param memberId
      * @param updateNickname
-     * @exception : 일치하는 memberId 없으면 -> CustomException.globalError(ErrorCode.ID_NOT_FOUND)
-     * @exception : 닉네임이 이전과 같다면 -> CustomException.localError
+     * @exception : 일치하는 memberId 없으면 -> ErrorCode.ID_NOT_FOUND
+     * @exception : 닉네임이 이전과 같다면 -> ErrorCode.NICKNAME_EQUAL_PREVIOUS
      */
     public void updateNickname(Long memberId, String updateNickname) {
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                CustomException.globalError(ErrorCode.ID_NOT_FOUND)
+            new CustomException(ErrorCode.ID_NOT_FOUND)
         );
 
         if(member.getNickname().equals(updateNickname)){
-            throw CustomException.localError()
-                    .cause("nickname")
-                    .code("nickname.equal.previous")
-                    .message("닉네임이 이전과 같습니다.")
-                    .httpStatus(HttpStatus.BAD_REQUEST).build();
+            throw new CustomException(ErrorCode.NICKNAME_EQUAL_PREVIOUS);
         }
 
         member.changeNickname(updateNickname);
@@ -58,27 +84,23 @@ public class MemberService {
      * 패스워드 수정
      * @param memberId
      * @param memberDTO
-     * @exception : 일치하는 memberId 없으면 -> CustomException.globalError(ErrorCode.ID_NOT_FOUND)
-     * @exception : 기존 비밀번호와 DB 비밀번호가 불일치하면 -> CustomException.globalError(ErrorCode.PASSWORD_NOT_EQUAL);
-     * @exception : 기존 비밀번호와 새 비밀번호가 일치하면 -> CustomException.localError
+     * @exception : 일치하는 memberId 없으면 -> ErrorCode.ID_NOT_FOUND
+     * @exception : 기존 비밀번호와 DB 비밀번호가 불일치하면 -> ErrorCode.PASSWORD_NOT_EQUAL
+     * @exception : 기존 비밀번호와 새 비밀번호가 일치하면 -> ErrorCode.PASSWORD_EQUAL_PREVIOUS
      */
     public void updatePassword(Long memberId, MemberDTO.UpdatePassword memberDTO) {
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
-            CustomException.globalError(ErrorCode.ID_NOT_FOUND)
+            new CustomException(ErrorCode.ID_NOT_FOUND)
         );
 
         //DB에 저장된 비밀번호와 사용자가 입력한 기존 비밀번호 같아야 새 비밀번호로 변경 가능하다.
         if(! bCryptPasswordEncoder.matches(memberDTO.getOldPassword(), member.getPassword())){
-            throw CustomException.globalError(ErrorCode.PASSWORD_NOT_EQUAL);
+            throw new CustomException(ErrorCode.PASSWORD_NOT_EQUAL);
         }
 
         //기존 비밀번호와 새 비밀번호가 같다면 변경하지 않는다.
         if(memberDTO.getOldPassword().equals(memberDTO.getNewPassword())){
-            throw CustomException.localError()
-                    .cause("newPassword")
-                    .code("oldPassword.equal.newPassword")
-                    .message("기존 비밀번호와 새 비밀번호가 일치합니다.")
-                    .httpStatus(HttpStatus.BAD_REQUEST).build();
+            throw new CustomException(ErrorCode.PASSWORD_EQUAL_PREVIOUS);
         }
 
         member.changePassword(memberDTO.getNewPassword());
@@ -88,12 +110,12 @@ public class MemberService {
     /**
      * 회원조회
      * @param memberId
-     * @exception : 일치하는 memberId 없으면 -> CustomException.globalError(ErrorCode.ID_NOT_FOUND)
+     * @exception : 일치하는 memberId 없으면 -> ErrorCode.ID_NOT_FOUND
      * @return MemberDTO.Response
      */
     public MemberDTO.Response detail(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                CustomException.globalError(ErrorCode.ID_NOT_FOUND)
+                new CustomException(ErrorCode.ID_NOT_FOUND)
         );
 
         MemberDTO.Response response = MemberDTO.entityToDto(member);
