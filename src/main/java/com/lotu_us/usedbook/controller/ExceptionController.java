@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Set;
 
 @ControllerAdvice   //모든 컨트롤러에서 발생할 수 있는 예외를 잡아 처리할 수 있다.
 public class ExceptionController {
@@ -22,11 +24,20 @@ public class ExceptionController {
     //RequestParam, PathVariable Validated
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity constraintViolationExceptionHandler(ConstraintViolationException exception){
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .cause("url-params")
-                .code("parameter.validated")
-                .message(exception.getMessage()).build();
+        String cause = "";
+        String message = "";
+        Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
+        for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+            cause = constraintViolation.getPropertyPath().toString();
+            message = constraintViolation.getMessage();
+        }
+        cause = cause.split("\\.")[1];
 
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .cause(cause)
+                .code("parameter.validated")
+                .message(message)
+                .httpStatus(HttpStatus.BAD_REQUEST).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
