@@ -1,27 +1,24 @@
 package com.lotu_us.usedbook.domain.dto;
 
 import com.lotu_us.usedbook.domain.entity.Member;
+import com.lotu_us.usedbook.domain.validation.annotation.Email;
+import com.lotu_us.usedbook.domain.validation.annotation.Nickname;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 public class MemberDTO {
 
     @Getter
     @ToString
     public static class Join{
-        @NotBlank(message = "{nickname.NotBlank}")
-        @Size(max = 10, message = "{nickname.SizeMax}")
+        @Nickname
         private String nickname;
 
-        @NotBlank
+        @Email
         private String email;
 
-        @NotBlank(message = "{password.NotBlank}")
-        //@Pattern(regexp = PasswordRegexpConfig.reg, message = "{password.Pattern}")
+        //@Password
         private String password;
 
         @Builder
@@ -33,16 +30,13 @@ public class MemberDTO {
     }
 
 
-
     @Getter
     @ToString
-    public static class UpdatePassword{
-        @NotBlank(message = "{password.NotBlank}")
-        //@Pattern(regexp = PasswordRegexpConfig.reg, message = "{password.Pattern}")
+    public static class UpdatePassword {
+        //@Password
         private String oldPassword;
 
-        @NotBlank(message = "{password.NotBlank}")
-        //@Pattern(regexp = PasswordRegexpConfig.reg, message = "{password.Pattern}")
+        //@Password
         private String newPassword;
 
         public UpdatePassword(String oldPassword, String newPassword) {
