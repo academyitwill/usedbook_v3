@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="fragments/head.html :: head"></th:block>
     <title>Title</title>
@@ -31,13 +31,12 @@
         </div>
 
         <div class="login-position">
-            <a class="btn btn btn-outline-primary" href="../member/login.html" th:href="@{/login}"
-               th:if="${session.loginMember == null}">
+            <a class="btn btn btn-outline-primary" th:href="@{/login}" sec:authorize="isAnonymous()">
                 <i class="fas fa-sign-in-alt"></i> LOGIN
             </a>
-            <div class="dropdown" th:if="${session.loginMember != null}">
+            <div class="dropdown" sec:authorize="isAuthenticated()">
                 <a class="btn btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span th:text="${session.loginMember.nickname}">닉네임</span> 님
+                    <span th:text="${#authentication.getPrincipal().member.nickname}">닉네임</span> 님
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                     <li><a class="dropdown-item" th:href="@{/dashboard/myInfo}"><i class="fas fa-user"></i> 대시보드</a></li>
