@@ -3,20 +3,24 @@ class ValidUtil {
         this.fields = fields;
     }
 
-    successProcess(){
-        for(var i=0; i<this.fields.length; i++){
-            this.inputClass(this.fields[i], "green");
-            this.feedbackClass(this.fields[i], "none", null);
-        }
+    successProcess(field){
+        this.inputClass(field, "green");
+        this.feedbackClass(field, "none", null);
     }
 
     errorProcess(errorList){
+        var list = [];
+        if(errorList.length == undefined){  //Custom오류로 객체1개만 반환될 때
+            list.push(errorList);
+            errorList = list;
+        }
+
         for(var i=0; i<this.fields.length; i++){
-            var findErrorObj = errorList.find((error) => { return error.field == this.fields[i]; });
+            var findErrorObj = errorList.find((error) => { return error.cause == this.fields[i]; });
 
             if(findErrorObj != undefined){
-                this.inputClass(findErrorObj.field, "red");
-                this.feedbackClass(findErrorObj.field, "block", findErrorObj.message);
+                this.inputClass(findErrorObj.cause, "red");
+                this.feedbackClass(findErrorObj.cause, "block", findErrorObj.message);
                 break;
                 return false;
             }else{
