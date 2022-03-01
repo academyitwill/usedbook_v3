@@ -43,7 +43,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         String password = bCryptPasswordEncoder.encode("password" + UUID.randomUUID().toString().substring(0, 6));
         // 비밀번호. 사용자가 입력한 적은 없지만 만들어준다.
 
-        Member findMember = memberRepository.findByEmail(email);
+        Member findMember = memberRepository.findByEmail(email).orElse(null);
 
         //DB에 없는 사용자라면 회원가입처리
         if(findMember == null){
