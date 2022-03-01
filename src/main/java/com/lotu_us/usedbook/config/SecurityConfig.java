@@ -1,5 +1,6 @@
 package com.lotu_us.usedbook.config;
 
+import com.lotu_us.usedbook.auth.FormLoginFailureHandler;
 import com.lotu_us.usedbook.auth.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalOauth2UserService principalOauth2UserService;
+    private final FormLoginFailureHandler formLoginFailureHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .loginProcessingUrl("/loginProcessing")
                 .defaultSuccessUrl("/")
+                .failureHandler(formLoginFailureHandler)
             .and()
             .logout()
                 .logoutUrl("/logout")
