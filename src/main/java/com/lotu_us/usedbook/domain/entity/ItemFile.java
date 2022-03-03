@@ -1,14 +1,11 @@
 package com.lotu_us.usedbook.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @ToString
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ItemFile {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +19,20 @@ public class ItemFile {
     private String filePath;
 
     private String fileName;
+
+    @Builder
+    public ItemFile(Item item, String filePath, String fileName) {
+        this.item = item;
+        this.filePath = filePath;
+        this.fileName = fileName;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemFile{" +
+                "id=" + id +
+                ", filePath='" + filePath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
 }

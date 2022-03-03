@@ -1,5 +1,5 @@
 const baseUrl = window.location.pathname;           //posts    //posts/novel
-var id = baseUrl.replace("/post/update/", "");
+var id = baseUrl.replace("/item/edit/", "");
 
 //detail.js와 유사
 $(document).ready(function(){
@@ -9,14 +9,14 @@ $(document).ready(function(){
 //detail.js와 같음
 function loadPost(){
     $.ajax({
-        url: "/api/post/"+id,
+        url: "/api/item/"+id,
         type: "get",
         success: function(data){
             replacePost(data);
         },
         error: function(error){
             alert(error.responseText);
-            window.location.replace("/posts");
+            window.location.replace("/item/list");
         }
     });
 }
@@ -38,7 +38,7 @@ function replacePost(post){
     });
     document.querySelector("#content").value = post.content;
 
-    files.init(post.fileNames);
+    files.init(post.files);
 }
 
 
@@ -48,6 +48,7 @@ function replacePost(post){
 
 //write.js와 유사
 const fields = ["title", "category", "price", "stock", "saleStatus", "content", "fileList"];
+const validUtil = new ValidUtil(fields);
 
 function editFormSubmit(){
     //이미지 체크 (slider.js)
@@ -60,11 +61,14 @@ function editFormSubmit(){
     var formData = new FormData(form);
 
     //(slider.js) 파일 저장
+    //console.log(files);
     files.map.forEach(function(v, k){
-        formData.append("fileList", v);
+        formData.append("plusFileList", v);
     });
+    //기존 이미지는 v에 downloadImage가 저장되어있지만 컨트롤러에서 받을 땐 Multipart타입이 아니기때문에 null로 표시된다.
 
     //write.js에서 이부분만 추가됨
+    //console.log(files.removeArr);
     formData.append("removeFileList", new Blob([JSON.stringify(files.removeArr)] , {type: "application/json"}));
 
     //data json으로 저장
@@ -78,20 +82,21 @@ function editFormSubmit(){
     }
     formData.append("jsonData", new Blob([JSON.stringify(data)] , {type: "application/json"}));
 
+
     $.ajax({
-        url: "/api/post/"+id,
+        url: "/api/item/"+id,
         type: "post",
         data: formData,
         contentType: false,
         processData: false,
         enctype : 'multipart/form-data',
         success: function(data){
-            successProcess();
-            $("#editForm").submit();
+            validUtil.successProcess();
+            window.location.replace("/item/"+id);
         },
         error: function(error){
-            errorProcess(error.responseJSON);
-            console.clear();    //개발자도구에서 오류 안나오게 할 수 있음
+            validUtil.errorProcess(error.responseJSON);
+            //console.clear();    //개발자도구에서 오류 안나오게 할 수 있음
         }
     });
 
@@ -106,40 +111,4 @@ $("#title, #category, #price, #stock, #content").on("click", function(){
         $("#"+thisid+"Help").removeClass("ani");
     }
 });
-
-
-
-function successProcess(){
-    for(var i=0; i<fields.length; i++){
-        feedbackClass(fields[i], "none", null);
-    }
-}
-
-function errorProcess(errorList){
-    for(var i=0; i<fields.length; i++){
-
-        feedbackClass(fields[i], "none", null);     //초기화
-
-        var findErrorObj = errorList.find((error) => { return error.field == fields[i]; });
-        if(findErrorObj != undefined){
-            feedbackClass(findErrorObj.field, "block", findErrorObj.message);
-            $("#"+findErrorObj.field+"Help").addClass("ani");
-            break;
-            return false;
-        }else{
-            feedbackClass(fields[i], "none", null);
-        }
-    }
-}
-
-
-function feedbackClass(selector, display, text){
-    if(display == "block"){
-        $("#"+selector+"Help").css("display", "block").text(text)
-        .addClass("invalid-feedback").removeClass("valid-feedback");
-    }
-    if(display == "none"){
-        $("#"+selector+"Help").css("display", "none");
-    }
-}
 

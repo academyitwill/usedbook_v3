@@ -9,6 +9,8 @@
         .head { flex-wrap:nowrap; flex-direction:row; width:100%; }
         .head h3 { width:50%; margin:0px; padding:0px; }
         .head #searchForm { width:50%; margin:0px; padding:0px; }
+        .head #searchForm #search {font-size:0.95em;}
+        .head #searchForm #searchValue {font-size:0.95em; }
         .head #searchForm .input-group { float:right; max-width:350px; }
         .head #searchForm .input-group * { padding:0.2em 0.7em; }
         .head #searchForm .input-group .form-select { max-width:fit-content; padding-right:2em; }
@@ -22,21 +24,21 @@
 </head>
 <body>
 <div th:replace="fragments/navbar.html :: navbar"></div>
-<div class="container" th:with="baseUrl = ${#httpServletRequest.requestURI}">
+<div class="container">
 
     <!--/* 상단 */-->
     <div class="head row mt-4">
-        <h3 class="text-wrap">카테고리명</h3>
-        <form id="searchForm" method="get" th:action="@{${baseUrl}(page=${param.page}, srange=${param.srange}, stext=${param.stext}, otext=${param.otext}, otype=${param.otype}) }">
+        <h3 class="text-wrap categoryName">카테고리명</h3>
+        <form id="searchForm" name="searchForm" method="get">
             <div class="input-group">
-                <select class="form-select" name="srange">
-                    <option value="1" th:selected="${#strings.equals(param.srange, '1')}">제목</option>
-                    <option value="2" th:selected="${#strings.equals(param.srange, '2')}">작성자</option>
-                    <option value="3" th:selected="${#strings.equals(param.srange, '3')}">내용</option>
-                    <option value="4" th:selected="${#strings.equals(param.srange, '4')}">제목+내용</option>
+                <select id="search" name="search" class="form-select" >
+                    <option value="1">제목</option>
+                    <option value="2">작성자</option>
+                    <option value="3">내용</option>
+                    <option value="4">제목+내용</option>
                 </select>
-                <input type="text" class="form-control" name="stext" th:value="${param.stext}">
-                <button class="form-control" type="submit"><i class="fas fa-search"></i></button>
+                <input type="text" class="form-control" id="searchValue">
+                <button class="form-control" type="button" onclick="searchFormSubmit()"><i class="fas fa-search"></i></button>
             </div>
         </form>
     </div>
@@ -57,10 +59,10 @@
             <th scope="col" >번호</th>
             <th scope="col">카테고리</th>
             <th scope="col" id="title" class="desc">제목<span>↓</span></th>
-            <th scope="col" id="salestatus" class="desc">판매상태<span>↓</span></th>
-            <th scope="col" id="writer" class="desc">작성자<span>↓</span></th>
-            <th scope="col" id="createtime" class="desc">날짜<span>↓</span></th>
-            <th scope="col" id="viewcount" class="desc">조회<span>↓</span></th>
+            <th scope="col" id="saleStatus" class="desc">판매상태<span>↓</span></th>
+            <th scope="col" id="seller" class="desc">작성자<span>↓</span></th>
+            <th scope="col" id="createTime" class="desc">날짜<span>↓</span></th>
+            <th scope="col" id="viewCount" class="desc">조회<span>↓</span></th>
         </tr>
         </thead>
         <tbody>
@@ -79,6 +81,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="/js/pagination.js"></script>
-<script src="/js/post/list.js"></script>
+<script src="/js/item/list.js"></script>
 </body>
 </html>
