@@ -121,7 +121,7 @@ function registerSubmit(){
             throw new Error('Something went wrong');
         })
         .then((responseJson) => {
-            window.location.href='/joinOk';
+            window.location.replace('/joinOk');
         })
         .catch((error) => {
             console.log(error)
