@@ -2,6 +2,7 @@ package com.lotu_us.usedbook.domain.dto;
 
 import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.enums.Category;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -29,6 +30,15 @@ public class ItemDTO {
 
         @NotBlank
         private String content;
+
+        @Builder
+        public Write(String title, Category category, int price, int stock, String content) {
+            this.title = title;
+            this.category = category;
+            this.price = price;
+            this.stock = stock;
+            this.content = content;
+        }
     }
 
 
