@@ -16,5 +16,5 @@ public class UsedbookApplication {
 	public BCryptPasswordEncoder encoder(){
 		return new BCryptPasswordEncoder();
 	}
-
+	//security config에 추가하려했지만 순환참조가 발생하여 여기에 작성한다.
 }
