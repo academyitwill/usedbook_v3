@@ -96,10 +96,11 @@ const removeFilesArr = new Array();
 const files = {
     map: filesMap,
     removeArr: removeFilesArr,
-    init : function(postFileNames){
-        for(var i=0; i<postFileNames.length; i++){
-            var url = "/api/image/"+postFileNames[i];
-            this.map.set(postFileNames[i], "downloadImage");
+    init : function(files){
+        for(var i=0; i<files.length; i++){
+            var fileName = files[i].fileName;
+            var url = "/api/image/"+fileName;
+            this.map.set(fileName, "downloadImage");    //없으면 수정할 때 이미지 0개로 처리됨 = 수정 시 무조건 파일을 업로드해야됨
             thumbSlider.addSlide(url);
         }
     },
