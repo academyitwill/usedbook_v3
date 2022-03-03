@@ -7,6 +7,8 @@ public enum ErrorCode {
     DATABASE_ERROR("database", "database", "데이터베이스 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     PASSWORD_NOT_EQUAL("password", "password.notequal", "패스워드가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     ID_NOT_FOUND("id", "id.notfound", "해당 id를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    EDIT_ACCESS_DENIED("edit", "edit.access.denied", "수정 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+    DELETE_ACCESS_DENIED("delete", "delete.access.denied", "삭제 권한이 없습니다.", HttpStatus.BAD_REQUEST),
 
 
     //member
@@ -16,6 +18,7 @@ public enum ErrorCode {
     PASSWORD_EQUAL_PREVIOUS("newPassword", "password.equal.previous", "기존 비밀번호와 새 비밀번호가 일치합니다.", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_FOUND("email", "email.notfound", "해당 이메일을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     NICKNAME_NOT_EQUAL("nickname", "nickname.notequal", "닉네임이 일치하지 않습니다.", HttpStatus.BAD_REQUEST)
+
     ;
 
     private String cause;
