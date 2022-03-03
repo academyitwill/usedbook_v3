@@ -16,16 +16,16 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/posts}" th:classappend="${category}=='all' ? 'custom-active'">통합검색</a>
+                    <a class="nav-link" th:href="@{/item/list}" th:classappend="${category}=='all' ? 'custom-active'">통합검색</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/posts/novel}" th:classappend="${category}=='novel' ? 'custom-active'">소설</a>
+                    <a class="nav-link" th:href="@{/item/list/novel}" th:classappend="${category}=='novel' ? 'custom-active'">소설</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/posts/humanities}" th:classappend="${category}=='humanities' ? 'custom-active'">인문</a>
+                    <a class="nav-link" th:href="@{/item/list/humanities}" th:classappend="${category}=='humanities' ? 'custom-active'">인문</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/posts/cartoon}" th:classappend="${category}=='cartoon' ? 'custom-active'">만화</a>
+                    <a class="nav-link" th:href="@{/item/list/cartoon}" th:classappend="${category}=='cartoon' ? 'custom-active'">만화</a>
                 </li>
             </ul>
         </div>
@@ -40,7 +40,7 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                     <li><a class="dropdown-item" th:href="@{/dashboard/myInfo}"><i class="fas fa-user"></i> 대시보드</a></li>
-                    <li><a class="dropdown-item" th:href="@{/post}"><i class="fas fa-file-alt"></i> 글작성하기</a></li>
+                    <li><a class="dropdown-item" th:href="@{/item/write}"><i class="fas fa-file-alt"></i> 글작성하기</a></li>
                     <li><a class="dropdown-item" th:href="@{/order/basket}"><i class="fas fa-shopping-basket"></i> 장바구니</a></li>
                     <li><a class="dropdown-item" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> LOGOUT</a></li>
                 </ul>
