@@ -40,6 +40,13 @@ public class Member {
         this.provider = provider;
     }
 
+    //테스트용
+    public Member(Long id, String email, String nickname) {
+        this.id = id;
+        this.nickname = nickname;
+        this.email = email;
+    }
+
     public void changeNickname(String updateNickname) {
         this.nickname = updateNickname;
     }
