@@ -58,9 +58,10 @@ public class ItemApiController {
             @PathVariable Long itemId,
             @Validated @RequestPart(value = "jsonData") ItemDTO.Write itemDTO, BindingResult bindingResult,
             @RequestPart(value = "plusFileList", required = false) List<MultipartFile> plusFileList,
-            @RequestPart(value = "removeFileList", required = false) List<String> removeFileList
+            @RequestPart(value = "removeFileList", required = false) List<String> removeFileList,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        itemService.edit(itemId, itemDTO, plusFileList, removeFileList);
+        itemService.edit(itemId, principalDetails.getMember(), itemDTO, plusFileList, removeFileList);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
@@ -68,8 +69,11 @@ public class ItemApiController {
      * 상품 삭제
      */
     @DeleteMapping("/{itemId}")
-    public ResponseEntity remove(@PathVariable Long itemId){
-        itemService.remove(itemId);
+    public ResponseEntity remove(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        itemService.remove(itemId, principalDetails.getMember());
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

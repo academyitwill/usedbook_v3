@@ -46,6 +46,7 @@ public class ItemService {
      * @param member
      * @param itemDTO
      * @param fileList
+     * 스프링 시큐리티로 회원만 접근 가능함
      */
     public Long write(Member member, ItemDTO.Write itemDTO, List<MultipartFile> fileList) {
         Item item = Item.builder()
@@ -97,11 +98,19 @@ public class ItemService {
      * @param plusFileList
      * @param removeFileList
      * @exception : 존재하지 않는 게시글 아이디이면 ErrorCode.ID_NOT_FOUND
+     * @exception : 게시글 작성자와 현재 회원이 일치하지 않다면 ErrorCode.EDIT_ACCESS_DENIED
+     *
      */
-    public void edit(Long itemId, ItemDTO.Write itemDTO, List<MultipartFile> plusFileList, List<String> removeFileList) {
+    public void edit(Long itemId, Member member, ItemDTO.Write itemDTO, List<MultipartFile> plusFileList, List<String> removeFileList) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
+
+        String sellerEmail = item.getSeller().getEmail();
+        String loginMemberEmail = member.getEmail();
+        if(!sellerEmail.equals(loginMemberEmail)){
+            throw new CustomException(ErrorCode.EDIT_ACCESS_DENIED);
+        }
 
         item.changeContents(itemDTO);
 
@@ -120,11 +129,18 @@ public class ItemService {
      * 상품 삭제
      * @param itemId
      * @exception : 존재하지 않는 게시글 아이디이면 ErrorCode.ID_NOT_FOUND
+     * @exception : 게시글 작성자와 현재 회원이 일치하지 않다면 ErrorCode.DELETE_ACCESS_DENIED
      */
-    public void remove(Long itemId) {
+    public void remove(Long itemId, Member member) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
         );
+
+        String sellerEmail = item.getSeller().getEmail();
+        String loginMemberEmail = member.getEmail();
+        if(!sellerEmail.equals(loginMemberEmail)){
+            throw new CustomException(ErrorCode.DELETE_ACCESS_DENIED);
+        }
 
         itemRepository.delete(item);
     }
