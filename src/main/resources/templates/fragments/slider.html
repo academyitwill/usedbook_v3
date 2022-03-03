@@ -38,7 +38,9 @@
     <div thumbsSlider="" class="swiper thumb-bottom pt-2">
         <div class="swiper-wrapper">
             <!--/* 파일 추가 */-->
-            <div class="swiper-slide">
+            <div class="swiper-slide"
+                 th:if="${#strings.contains(#httpServletRequest.requestURI, 'write') OR
+                          #strings.contains(#httpServletRequest.requestURI, 'edit')}" >
                 <img th:src="@{/img/slider-plus.jpg}" onclick="addImgClick(event)" />
             </div>
             <!--/* <input type="file" id="inputFile" accept="image/*" style="display:none;" multiple onchange="fileChange(event)"> */-->
