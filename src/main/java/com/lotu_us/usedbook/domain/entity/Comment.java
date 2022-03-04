@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,12 +29,18 @@ public class Comment {
 
     private LocalDateTime createTime;
 
+    //대댓글
+    private Long parentId;
+
+
+
     @Builder
-    public Comment(Member writer, Item item, int depth, String content) {
+    public Comment(Member writer, Item item, int depth, String content, Long parentId) {
         this.writer = writer;
         this.item = item;
         this.depth = depth;
         this.content = content;
+        this.parentId = parentId;
     }
 
     @PrePersist

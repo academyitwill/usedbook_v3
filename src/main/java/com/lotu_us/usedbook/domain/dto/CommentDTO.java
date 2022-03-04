@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.format.DateTimeFormatter;
@@ -15,14 +16,18 @@ public class CommentDTO {
     @ToString
     public static class Write{
         @NotNull
+        @Max(3)
         private int depth;
         @NotBlank
         private String content;
 
+        private Long parentId;
+
         @Builder
-        public Write(int depth, String content) {
+        public Write(int depth, String content, Long parentId) {
             this.depth = depth;
             this.content = content;
+            this.parentId = parentId;
         }
     }
 
@@ -33,6 +38,7 @@ public class CommentDTO {
         private String writer;
         private String content;
         private int depth;
+        private Long parentId;
         private String createTime;
     }
 
@@ -42,6 +48,7 @@ public class CommentDTO {
         response.writer = comment.getWriter().getNickname();
         response.content = comment.getContent();
         response.depth = comment.getDepth();
+        response.parentId = comment.getParentId();
         response.createTime = comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         return response;
     }
