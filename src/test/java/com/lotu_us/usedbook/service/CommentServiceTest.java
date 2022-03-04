@@ -49,10 +49,10 @@ class CommentServiceTest {
                 .depth(0).content("댓글내용").build();
 
         //when
-        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+        CommentDTO.Response write = commentService.write(principalDetails, item.getId(), commentDTO);
 
         //then
-        Comment comment = commentRepository.findById(commentId).orElse(null);
+        Comment comment = commentRepository.findById(write.getId()).orElse(null);
         Assertions.assertThat(comment.getContent()).isEqualTo(commentDTO.getContent());
         Assertions.assertThat(item.getComments().size()).isEqualTo(1);
         Assertions.assertThat(item.getCommentCount()).isEqualTo(1);
@@ -117,14 +117,14 @@ class CommentServiceTest {
     void edit_Success(){
         //given
         CommentDTO.Write commentDTO = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
-        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+        CommentDTO.Response write = commentService.write(principalDetails, item.getId(), commentDTO);
 
         //when
         CommentDTO.Edit editDTO = CommentDTO.Edit.builder().content("댓글내용수정").build();
-        commentService.edit(principalDetails, commentId, editDTO);
+        commentService.edit(principalDetails, write.getId(), editDTO);
 
         //then
-        Comment comment = commentRepository.findById(commentId).orElse(null);
+        Comment comment = commentRepository.findById(write.getId()).orElse(null);
         Item item = itemRepository.findById(this.item.getId()).orElse(null);
 
         Assertions.assertThat(editDTO.getContent()).isEqualTo(comment.getContent());
@@ -136,7 +136,7 @@ class CommentServiceTest {
     void edit_Fail_Not_Member(){
         //given
         CommentDTO.Write commentDTO = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
-        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+        CommentDTO.Response write = commentService.write(principalDetails, item.getId(), commentDTO);
 
         //when
         CommentDTO.Edit editDTO = CommentDTO.Edit.builder().content("댓글내용수정").build();
@@ -144,7 +144,7 @@ class CommentServiceTest {
 
         //then
         CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
-            commentService.edit(principalDetails, commentId, editDTO);
+            commentService.edit(principalDetails, write.getId(), editDTO);
         });
         org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ONLY_MEMBER);
     }
@@ -154,7 +154,7 @@ class CommentServiceTest {
     void edit_Fail_Editor_Is_Not_Writer(){
         //given
         CommentDTO.Write commentDTO = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
-        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+        CommentDTO.Response write = commentService.write(principalDetails, item.getId(), commentDTO);
 
         //when
         CommentDTO.Edit editDTO = CommentDTO.Edit.builder().content("댓글내용수정").build();
@@ -162,7 +162,7 @@ class CommentServiceTest {
 
         //then
         CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
-            commentService.edit(principalDetails, commentId, editDTO);
+            commentService.edit(principalDetails, write.getId(), editDTO);
         });
         org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.EDIT_ACCESS_DENIED);
     }
@@ -173,11 +173,11 @@ class CommentServiceTest {
         //given
         CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
         CommentDTO.Write commentDTO2 = CommentDTO.Write.builder().depth(0).content("댓글내용2").build();
-        Long commentId1 = commentService.write(principalDetails, item.getId(), commentDTO1);
-        Long commentId2 = commentService.write(principalDetails, item.getId(), commentDTO2);
+        CommentDTO.Response write1 = commentService.write(principalDetails, item.getId(), commentDTO1);
+        CommentDTO.Response write2 = commentService.write(principalDetails, item.getId(), commentDTO2);
 
         //when
-        commentService.delete(principalDetails, item.getId(), commentId1);
+        commentService.delete(principalDetails, item.getId(), write1.getId());
 
         //then
         Item item = itemRepository.findById(this.item.getId()).orElse(null);
@@ -191,14 +191,14 @@ class CommentServiceTest {
     void delete_Fail_Not_Member(){
         //given
         CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
-        Long commentId1 = commentService.write(principalDetails, item.getId(), commentDTO1);
+        CommentDTO.Response write = commentService.write(principalDetails, item.getId(), commentDTO1);
 
         //when
         principalDetails = null;
 
         //then
         CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
-            commentService.delete(principalDetails, item.getId(), commentId1);
+            commentService.delete(principalDetails, item.getId(), write.getId());
         });
         org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ONLY_MEMBER);
     }
@@ -208,14 +208,14 @@ class CommentServiceTest {
     void delete_Fail_Deleter_Is_Not_Writer(){
         //given
         CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
-        Long commentId1 = commentService.write(principalDetails, item.getId(), commentDTO1);
+        CommentDTO.Response write = commentService.write(principalDetails, item.getId(), commentDTO1);
 
         //when
         principalDetails = new PrincipalDetails(new Member("1234@1234.com", "1234"));
 
         //then
         CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
-            commentService.delete(principalDetails, item.getId(), commentId1);
+            commentService.delete(principalDetails, item.getId(), write.getId());
         });
         org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.DELETE_ACCESS_DENIED);
     }

@@ -29,8 +29,8 @@ public class CommentApiController {
             @Validated @RequestBody CommentDTO.Write commentDTO,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        commentService.write(principalDetails, itemId, commentDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        CommentDTO.Response write = commentService.write(principalDetails, itemId, commentDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(write);
     }
 
     /**
