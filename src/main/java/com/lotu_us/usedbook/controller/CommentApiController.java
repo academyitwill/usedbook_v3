@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/api/item")
 @RequiredArgsConstructor
 public class CommentApiController {
     private final CommentService commentService;
@@ -22,7 +22,7 @@ public class CommentApiController {
     /**
      * 댓글 작성
      */
-    @PostMapping("/{itemId}")
+    @PostMapping("/{itemId}/comment")
     @ReturnBindingResultError
     public ResponseEntity write(
             @PathVariable Long itemId,
@@ -36,7 +36,7 @@ public class CommentApiController {
     /**
      * 댓글 리스트 보기
      */
-    @GetMapping("/{itemId}/list")
+    @GetMapping("/{itemId}/comment/list")
     public ResponseEntity list(@PathVariable Long itemId){
         List<CommentDTO.Response> list = commentService.list(itemId);
         return ResponseEntity.status(HttpStatus.OK).body(list);
@@ -45,13 +45,28 @@ public class CommentApiController {
     /**
      * 댓글 수정
      */
-    @PutMapping("/{commentId}")
+    @PutMapping("/{itemId}/comment/{commentId}")
     public ResponseEntity edit(
+            @PathVariable Long itemId,
             @PathVariable Long commentId,
             @Validated @RequestBody CommentDTO.Edit commentDTO,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
         commentService.edit(principalDetails, commentId, commentDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    /**
+     * 댓글 삭제
+     */
+    @DeleteMapping("/{itemId}/comment/{commentId}")
+    public ResponseEntity delete(
+            @PathVariable Long itemId,
+            @PathVariable Long commentId,
+            @Validated @RequestBody CommentDTO.Edit commentDTO,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        commentService.delete(principalDetails, itemId, commentId);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
