@@ -1,15 +1,12 @@
 package com.lotu_us.usedbook.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @ToString
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +26,29 @@ public class Comment {
     private String content;
 
     private LocalDateTime createTime;
+
+    @Builder
+    public Comment(Member writer, Item item, int depth, String content) {
+        this.writer = writer;
+        this.item = item;
+        this.depth = depth;
+        this.content = content;
+    }
+
+    @PrePersist
+    public void setCreateTime() {
+        this.createTime = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+//                ", writer=" + writer +
+//                ", item=" + item +
+                ", depth=" + depth +
+                ", content='" + content + '\'' +
+                ", createTime=" + createTime +
+                '}';
+    }
 }

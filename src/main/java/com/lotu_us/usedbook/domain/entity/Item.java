@@ -108,8 +108,13 @@ public class Item {
                 ", createTime=" + createTime +
                 ", likeCount=" + likeCount +
                 ", viewCount=" + viewCount +
+                ", commentCount=" + commentCount +
 //                ", files=" + files +
 //                ", comments=" + comments +
                 '}';
+    }
+
+    public void addCommentCount(int currentCount) {
+        this.commentCount = currentCount + 1;
     }
 }
