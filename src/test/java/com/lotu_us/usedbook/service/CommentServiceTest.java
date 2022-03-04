@@ -110,6 +110,61 @@ class CommentServiceTest {
         Assertions.assertThat(responseList.get(1).getContent()).isEqualTo(commentDTO2.getContent());
     }
 
-    //댓글 리스트 조회 실패 : ID_NOT_FOUND
+    //댓글 리스트 조회 실패 : 상품 아이디가 없을 때. ID_NOT_FOUND
+
+    @Test
+    @DisplayName("댓글 수정 성공")
+    void edit_Success(){
+        //given
+        CommentDTO.Write commentDTO = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+
+        //when
+        CommentDTO.Edit editDTO = CommentDTO.Edit.builder().content("댓글내용수정").build();
+        commentService.edit(principalDetails, commentId, editDTO);
+
+        //then
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        Item item = itemRepository.findById(this.item.getId()).orElse(null);
+
+        Assertions.assertThat(editDTO.getContent()).isEqualTo(comment.getContent());
+        Assertions.assertThat(editDTO.getContent()).isEqualTo(item.getComments().get(0).getContent());
+    }
+
+    @Test
+    @DisplayName("댓글 수정 실패 - 수정하는 사람이 회원이 아닌 경우")
+    void edit_Fail_Not_Member(){
+        //given
+        CommentDTO.Write commentDTO = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+
+        //when
+        CommentDTO.Edit editDTO = CommentDTO.Edit.builder().content("댓글내용수정").build();
+        principalDetails = null;
+
+        //then
+        CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            commentService.edit(principalDetails, commentId, editDTO);
+        });
+        org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ONLY_MEMBER);
+    }
+
+    @Test
+    @DisplayName("댓글 수정 실패 - 수정하는 사람이 작성자가 아닌 경우")
+    void edit_Fail_Editor_Is_Not_Writer(){
+        //given
+        CommentDTO.Write commentDTO = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        Long commentId = commentService.write(principalDetails, item.getId(), commentDTO);
+
+        //when
+        CommentDTO.Edit editDTO = CommentDTO.Edit.builder().content("댓글내용수정").build();
+        principalDetails = new PrincipalDetails(new Member("1234@1234.com", "1234"));
+
+        //then
+        CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            commentService.edit(principalDetails, commentId, editDTO);
+        });
+        org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.EDIT_ACCESS_DENIED);
+    }
 
 }

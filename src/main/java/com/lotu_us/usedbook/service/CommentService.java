@@ -4,6 +4,7 @@ import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.CommentDTO;
 import com.lotu_us.usedbook.domain.entity.Comment;
 import com.lotu_us.usedbook.domain.entity.Item;
+import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.repository.CommentRepository;
 import com.lotu_us.usedbook.repository.ItemRepository;
 import com.lotu_us.usedbook.util.exception.CustomException;
@@ -67,5 +68,29 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         return collect;
+    }
+
+    /**
+     * 댓글 수정
+     * @param principalDetails
+     * @param commentId
+     * @param editDTO
+     * @exception : 수정하는 사람이 회원이 아니면 ONLY_MEMBER
+     * @exception : 수정하는 사람이 댓글 작성자가 아니면 ErrorCode.EDIT_ACCESS_DENIED
+     * commentId는 자신만 수정, 삭제할 수 있으니 타인이 접근할 수 없음. 따라서 반드시 존재함 -> exception 처리 안함
+     */
+    public void edit(PrincipalDetails principalDetails, Long commentId, CommentDTO.Edit editDTO) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        String loginMember = principalDetails.getMember().getEmail();
+        String commentWriter = comment.getWriter().getEmail();
+        if(!loginMember.equals(commentWriter)){
+            throw new CustomException(ErrorCode.EDIT_ACCESS_DENIED);
+        }
+
+        comment.changeContent(editDTO.getContent());
     }
 }

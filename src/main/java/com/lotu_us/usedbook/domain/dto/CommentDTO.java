@@ -45,4 +45,16 @@ public class CommentDTO {
         response.createTime = comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         return response;
     }
+
+    @Getter
+    @ToString
+    public static class Edit{
+        @NotBlank
+        private String content;
+
+        @Builder
+        public Edit(String content) {
+            this.content = content;
+        }
+    }
 }

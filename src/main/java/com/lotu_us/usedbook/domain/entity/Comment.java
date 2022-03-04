@@ -51,4 +51,8 @@ public class Comment {
                 ", createTime=" + createTime +
                 '}';
     }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }

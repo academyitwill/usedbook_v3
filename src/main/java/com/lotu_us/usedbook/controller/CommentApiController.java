@@ -21,9 +21,6 @@ public class CommentApiController {
 
     /**
      * 댓글 작성
-     * @param itemId
-     * @param commentDTO
-     * @param principalDetails
      */
     @PostMapping("/{itemId}")
     @ReturnBindingResultError
@@ -38,13 +35,24 @@ public class CommentApiController {
 
     /**
      * 댓글 리스트 보기
-     * @param itemId
-     * @return
      */
     @GetMapping("/{itemId}/list")
     public ResponseEntity list(@PathVariable Long itemId){
         List<CommentDTO.Response> list = commentService.list(itemId);
         return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
+    /**
+     * 댓글 수정
+     */
+    @PutMapping("/{commentId}")
+    public ResponseEntity edit(
+            @PathVariable Long commentId,
+            @Validated @RequestBody CommentDTO.Edit commentDTO,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        commentService.edit(principalDetails, commentId, commentDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }
