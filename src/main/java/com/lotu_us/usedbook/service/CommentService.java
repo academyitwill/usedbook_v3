@@ -93,4 +93,31 @@ public class CommentService {
 
         comment.changeContent(editDTO.getContent());
     }
+
+    /**
+     * 댓글 삭제
+     * @param principalDetails
+     * @param itemId
+     * @param commentId
+     * @exception : 수정하는 사람이 회원이 아니면 ONLY_MEMBER
+     * @exception : 수정하는 사람이 댓글 작성자가 아니면 ErrorCode.EDIT_ACCESS_DENIED
+     */
+    public void delete(PrincipalDetails principalDetails, Long itemId, Long commentId) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        String loginMember = principalDetails.getMember().getEmail();
+        String commentWriter = comment.getWriter().getEmail();
+        if(!loginMember.equals(commentWriter)){
+            throw new CustomException(ErrorCode.DELETE_ACCESS_DENIED);
+        }
+
+        commentRepository.deleteById(commentId);
+
+        Item item = itemRepository.findById(itemId).orElse(null);
+        item.getComments().removeIf(comment1 -> comment1.getId().equals(commentId) );
+        item.removeCommentCount(item.getCommentCount());
+    }
 }

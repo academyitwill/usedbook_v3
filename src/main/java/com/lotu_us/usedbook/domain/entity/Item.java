@@ -117,4 +117,8 @@ public class Item {
     public void addCommentCount(int currentCount) {
         this.commentCount = currentCount + 1;
     }
+
+    public void removeCommentCount(int currentCount) {
+        this.commentCount = currentCount - 1;
+    }
 }

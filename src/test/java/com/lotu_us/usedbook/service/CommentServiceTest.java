@@ -167,4 +167,57 @@ class CommentServiceTest {
         org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.EDIT_ACCESS_DENIED);
     }
 
+    @Test
+    @DisplayName("댓글 삭제 성공")
+    void delete_Success(){
+        //given
+        CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        CommentDTO.Write commentDTO2 = CommentDTO.Write.builder().depth(0).content("댓글내용2").build();
+        Long commentId1 = commentService.write(principalDetails, item.getId(), commentDTO1);
+        Long commentId2 = commentService.write(principalDetails, item.getId(), commentDTO2);
+
+        //when
+        commentService.delete(principalDetails, item.getId(), commentId1);
+
+        //then
+        Item item = itemRepository.findById(this.item.getId()).orElse(null);
+        Assertions.assertThat(item.getComments().get(0).getContent()).isEqualTo(commentDTO2.getContent());
+        Assertions.assertThat(item.getComments().size()).isEqualTo(1);
+        Assertions.assertThat(item.getCommentCount()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패 - 삭제하는 자가 회원이 아닌 경우")
+    void delete_Fail_Not_Member(){
+        //given
+        CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        Long commentId1 = commentService.write(principalDetails, item.getId(), commentDTO1);
+
+        //when
+        principalDetails = null;
+
+        //then
+        CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            commentService.delete(principalDetails, item.getId(), commentId1);
+        });
+        org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ONLY_MEMBER);
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 실패 - 삭제하는 자가 작성자가 아닌 경우")
+    void delete_Fail_Deleter_Is_Not_Writer(){
+        //given
+        CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        Long commentId1 = commentService.write(principalDetails, item.getId(), commentDTO1);
+
+        //when
+        principalDetails = new PrincipalDetails(new Member("1234@1234.com", "1234"));
+
+        //then
+        CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            commentService.delete(principalDetails, item.getId(), commentId1);
+        });
+        org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.DELETE_ACCESS_DENIED);
+    }
+
 }
