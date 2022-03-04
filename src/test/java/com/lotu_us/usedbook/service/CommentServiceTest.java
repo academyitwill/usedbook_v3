@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 class CommentServiceTest {
@@ -89,5 +91,25 @@ class CommentServiceTest {
         });
         org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ID_NOT_FOUND);
     }
+
+    @Test
+    @DisplayName("댓글 리스트 조회 성공")
+    void list_Success(){
+        //given
+        CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
+        CommentDTO.Write commentDTO2 = CommentDTO.Write.builder().depth(1).content("댓글내용2").build();
+        commentService.write(principalDetails, item.getId(), commentDTO1);
+        commentService.write(principalDetails, item.getId(), commentDTO2);
+
+        //when
+        List<CommentDTO.Response> responseList = commentService.list(item.getId());
+
+        //then
+        Assertions.assertThat(responseList.size()).isEqualTo(item.getCommentCount());
+        Assertions.assertThat(responseList.get(0).getContent()).isEqualTo(commentDTO1.getContent());
+        Assertions.assertThat(responseList.get(1).getContent()).isEqualTo(commentDTO2.getContent());
+    }
+
+    //댓글 리스트 조회 실패 : ID_NOT_FOUND
 
 }

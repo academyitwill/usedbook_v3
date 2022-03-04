@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -47,5 +50,22 @@ public class CommentService {
         item.addCommentCount(item.getCommentCount());
 
         return save.getId();
+    }
+
+    /**
+     * 댓글 리스트 보기
+     * @param itemId
+     * @exception : 상품ID가 존재하지 않으면 ErrorCode.ID_NOT_FOUND
+     */
+    public List<CommentDTO.Response> list(Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
+
+        List<CommentDTO.Response> collect = item.getComments().stream()
+                .map(comment -> CommentDTO.entityToDTOResponse(comment))
+                .collect(Collectors.toList());
+
+        return collect;
     }
 }
