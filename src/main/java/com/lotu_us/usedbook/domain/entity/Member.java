@@ -41,8 +41,7 @@ public class Member {
     }
 
     //테스트용
-    public Member(Long id, String email, String nickname) {
-        this.id = id;
+    public Member(String email, String nickname) {
         this.nickname = nickname;
         this.email = email;
     }

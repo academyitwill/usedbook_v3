@@ -6,6 +6,7 @@ import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.enums.Category;
 import com.lotu_us.usedbook.repository.ItemRepository;
+import com.lotu_us.usedbook.repository.MemberRepository;
 import com.lotu_us.usedbook.util.exception.CustomException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,15 +31,18 @@ import java.util.Map;
 @Transactional
 class ItemServiceTest {
 
+    @Autowired private MemberRepository memberRepository;
     @Autowired private ItemService itemService;
     @Autowired private ItemRepository itemRepository;
 
-    private Member member = new Member(37L, "11@11.com", "11");
-    private PrincipalDetails principalDetails = new PrincipalDetails(member);
+    private Member member;
+    private PrincipalDetails principalDetails;
     private List<MultipartFile> fileList = new ArrayList<>();
 
     @BeforeEach
     void before(){
+        member = memberRepository.save(new Member("123@123.com", "123"));
+        principalDetails = new PrincipalDetails(member);
         fileList.add(new MockMultipartFile("file1", "file1.jpg", MediaType.IMAGE_JPEG_VALUE, "hello".getBytes(StandardCharsets.UTF_8)));
         fileList.add(new MockMultipartFile("file2", "file2.png", MediaType.IMAGE_PNG_VALUE, "hello2".getBytes(StandardCharsets.UTF_8)));
     }
@@ -101,7 +105,7 @@ class ItemServiceTest {
         Long itemId = itemService.write(member, itemDTO, fileList);
 
         //when
-        PrincipalDetails another = new PrincipalDetails(new Member(38L, "12@12.com", "12"));
+        PrincipalDetails another = new PrincipalDetails(new Member("1234@1234.com", "1234"));
         ItemDTO.Response detail = itemService.detail(itemId, another);
 
         //then
