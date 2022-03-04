@@ -9,6 +9,7 @@ public enum ErrorCode {
     ID_NOT_FOUND("id", "id.notfound", "해당 id를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     EDIT_ACCESS_DENIED("edit", "edit.access.denied", "수정 권한이 없습니다.", HttpStatus.BAD_REQUEST),
     DELETE_ACCESS_DENIED("delete", "delete.access.denied", "삭제 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+    ONLY_MEMBER("access", "access.denied", "회원만 기능을 이용할 수 있습니다.", HttpStatus.BAD_REQUEST),
 
 
     //member
