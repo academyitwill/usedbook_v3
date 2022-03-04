@@ -68,6 +68,12 @@ public class Item {
         this.content = content;
     }
 
+    //테스트용
+    public Item(Member seller, String title) {
+        this.seller = seller;
+        this.title = title;
+    }
+
     @PrePersist //최초 Persist될 때 수행
     public void setCreateTime() {
         this.createTime = LocalDateTime.now();
@@ -102,8 +108,8 @@ public class Item {
                 ", createTime=" + createTime +
                 ", likeCount=" + likeCount +
                 ", viewCount=" + viewCount +
-                ", files=" + files +
-                ", comments=" + comments +
+//                ", files=" + files +
+//                ", comments=" + comments +
                 '}';
     }
 }
