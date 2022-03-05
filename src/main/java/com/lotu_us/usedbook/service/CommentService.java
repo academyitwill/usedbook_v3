@@ -11,6 +11,7 @@ import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
@@ -48,7 +50,7 @@ public class CommentService {
                 .content(commentDTO.getContent()).build();
 
         commentRepository.save(comment);
-        item.getComments().add(comment);
+        item.getComments().add(comment);  //싱크 맞추기용
         item.addCommentCount(item.getCommentCount());
 
         return CommentDTO.entityToDTOResponse(comment);
@@ -115,10 +117,13 @@ public class CommentService {
             throw new CustomException(ErrorCode.DELETE_ACCESS_DENIED);
         }
 
-        commentRepository.deleteById(commentId);
+        //commentRepository.deleteById(commentId);
 
-        Item item = itemRepository.findById(itemId).orElse(null);
-        item.getComments().removeIf(comment1 -> comment1.getId().equals(commentId) );
-        item.removeCommentCount(item.getCommentCount());
+        //Item item = itemRepository.findById(itemId).orElse(null);
+        //item.getComments().removeIf(comment1 -> comment1.getId().equals(commentId) ); //싱크 맞추기용
+        //item.removeCommentCount(item.getCommentCount());
+
+        //실제 삭제하진않고 viewStatus를 false로 처리하여 view에서도 삭제된 댓글을 알 수 있게처리한다.
+        comment.changeViewStatusFalse();
     }
 }

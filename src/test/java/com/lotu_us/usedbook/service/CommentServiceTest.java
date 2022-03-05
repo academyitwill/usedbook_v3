@@ -172,18 +172,14 @@ class CommentServiceTest {
     void delete_Success(){
         //given
         CommentDTO.Write commentDTO1 = CommentDTO.Write.builder().depth(0).content("댓글내용1").build();
-        CommentDTO.Write commentDTO2 = CommentDTO.Write.builder().depth(0).content("댓글내용2").build();
         CommentDTO.Response write1 = commentService.write(principalDetails, item.getId(), commentDTO1);
-        CommentDTO.Response write2 = commentService.write(principalDetails, item.getId(), commentDTO2);
 
         //when
         commentService.delete(principalDetails, item.getId(), write1.getId());
 
         //then
-        Item item = itemRepository.findById(this.item.getId()).orElse(null);
-        Assertions.assertThat(item.getComments().get(0).getContent()).isEqualTo(commentDTO2.getContent());
-        Assertions.assertThat(item.getComments().size()).isEqualTo(1);
-        Assertions.assertThat(item.getCommentCount()).isEqualTo(1);
+        Comment comment = commentRepository.findById(write1.getId()).orElse(null);
+        Assertions.assertThat(comment.isViewStatus()).isFalse();
     }
 
     @Test

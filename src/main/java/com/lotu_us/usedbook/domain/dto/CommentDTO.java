@@ -3,6 +3,7 @@ package com.lotu_us.usedbook.domain.dto;
 import com.lotu_us.usedbook.domain.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.Max;
@@ -39,6 +40,7 @@ public class CommentDTO {
         private String content;
         private int depth;
         private Long parentId;
+        private boolean viewStatus;
         private String createTime;
     }
 
@@ -46,15 +48,21 @@ public class CommentDTO {
         CommentDTO.Response response = new CommentDTO.Response();
         response.id = comment.getId();
         response.writer = comment.getWriter().getNickname();
-        response.content = comment.getContent();
+        if(comment.isViewStatus()){
+            response.content = comment.getContent();
+        }else{
+            response.content = "삭제된 댓글입니다.";
+        }
         response.depth = comment.getDepth();
         response.parentId = comment.getParentId();
+        response.viewStatus = comment.isViewStatus();
         response.createTime = comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         return response;
     }
 
     @Getter
     @ToString
+    @NoArgsConstructor
     public static class Edit{
         @NotBlank
         private String content;

@@ -1,11 +1,13 @@
 package com.lotu_us.usedbook.domain.entity;
 
-import lombok.*;
+import com.lotu_us.usedbook.util.BooleanConverter;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +34,10 @@ public class Comment {
     //대댓글
     private Long parentId;
 
+    //댓글 보여주기 유무. 삭제한 댓글인 경우 false
+    @Convert(converter = BooleanConverter.class)
+    private boolean viewStatus = true;
+
 
 
     @Builder
@@ -56,11 +62,16 @@ public class Comment {
 //                ", item=" + item +
                 ", depth=" + depth +
                 ", content='" + content + '\'' +
+                ", viewStatus=" + viewStatus +
                 ", createTime=" + createTime +
                 '}';
     }
 
     public void changeContent(String content) {
         this.content = content;
+    }
+
+    public void changeViewStatusFalse() {
+        this.viewStatus = false;
     }
 }
