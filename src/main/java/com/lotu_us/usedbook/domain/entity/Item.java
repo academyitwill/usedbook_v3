@@ -121,4 +121,8 @@ public class Item {
     public void removeCommentCount(int currentCount) {
         this.commentCount = currentCount - 1;
     }
+
+    public void addViewCount(int currentCount) {
+        this.viewCount = currentCount + 1;
+    }
 }

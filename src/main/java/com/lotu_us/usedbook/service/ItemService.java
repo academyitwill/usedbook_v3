@@ -88,6 +88,9 @@ public class ItemService {
             }
         }
 
+        //조회수 증가
+        item.addViewCount(item.getViewCount());
+
         return response;
     }
 

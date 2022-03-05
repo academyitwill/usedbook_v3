@@ -82,7 +82,7 @@ public class ItemDTO {
         response.saleStatus = item.getSaleStatus().getValue();
         response.content = item.getContent();
         response.likeCount = item.getLikeCount();
-        response.viewCount = item.getViewCount();
+        response.viewCount = item.getViewCount() +1;
         response.createTime = item.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         response.files = ItemFileDTO.entityListToDtoList(item.getFiles());
         return response;
