@@ -2,6 +2,7 @@ package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.ItemDTO;
+import com.lotu_us.usedbook.domain.dto.LikeItemDTO;
 import com.lotu_us.usedbook.domain.entity.LikeItem;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.enums.Category;
@@ -74,4 +75,20 @@ public class LikeItemServiceTest {
         Assertions.assertThat(likeItem).isNull();
     }
 
+    @Test
+    @DisplayName("관심상품 리스트 조회 성공")
+    void item_Like_List_Success(){
+        //given member, item
+        Long likeItemId1 = likeItemService.like(principalDetails, itemId);
+
+        //when
+        List<LikeItemDTO.Response> list = likeItemService.list(principalDetails);
+
+        //then
+        List<LikeItem> allByMember = likeItemRepository.findAllByMemberId(member.getId());
+
+        Assertions.assertThat(allByMember.size()).isEqualTo(1);
+        Assertions.assertThat(allByMember.get(0).getMember().getEmail()).isEqualTo(member.getEmail());
+        Assertions.assertThat(allByMember.get(0).getItem().getId()).isEqualTo(itemId);
+    }
 }

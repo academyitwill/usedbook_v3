@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface LikeItemRepository extends JpaRepository<LikeItem, Long> {
 
     @Modifying
     void deleteByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId);
+
+    List<LikeItem> findAllByMemberId(@Param("memberId") Long memberId);
 }
