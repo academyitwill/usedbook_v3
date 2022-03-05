@@ -41,6 +41,7 @@ public class LikeItemService {
                 .item(item).build();
 
         LikeItem save = likeItemRepository.save(likeItem);
+        item.addLikeCount(item.getLikeCount());
 
         return save.getId();
     }
@@ -61,6 +62,7 @@ public class LikeItemService {
 
         Long memberId = principalDetails.getMember().getId();
         likeItemRepository.deleteByMemberIdAndItemId(memberId, itemId);
+        item.removeLikeCount(item.getLikeCount());
     }
 
     /**
@@ -79,6 +81,17 @@ public class LikeItemService {
                 .collect(Collectors.toList());
 
         return collect;
+    }
+
+    /**
+     * 관심상품 등록여부 조회
+     */
+    public boolean isLiked(Long memberId, Long itemId){
+        LikeItem likeItem = likeItemRepository.findByMemberIdAndItemId(memberId, itemId).orElse(null);
+        if(likeItem == null){
+            return false;
+        }
+        return true;
     }
 
 }

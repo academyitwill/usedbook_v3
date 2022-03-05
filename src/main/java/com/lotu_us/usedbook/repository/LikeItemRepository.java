@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LikeItemRepository extends JpaRepository<LikeItem, Long> {
@@ -15,4 +16,6 @@ public interface LikeItemRepository extends JpaRepository<LikeItem, Long> {
     void deleteByMemberIdAndItemId(@Param("memberId") Long memberId, @Param("itemId") Long itemId);
 
     List<LikeItem> findAllByMemberId(@Param("memberId") Long memberId);
+
+    Optional<LikeItem> findByMemberIdAndItemId(Long memberId, Long itemId);
 }

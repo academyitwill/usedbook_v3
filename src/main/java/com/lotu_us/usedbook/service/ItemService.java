@@ -36,6 +36,7 @@ import java.util.UUID;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemFileRepository itemFileRepository;
+    private final LikeItemService likeItemService;
 
     @Value("${custom.path.upload-images}")
     private String imgUploadPath;
@@ -86,6 +87,10 @@ public class ItemService {
             if(sellerEmail.equals(loginMemberEmail)){
                 response.memberIsSellerTrue();
             }
+
+            //현재 로그인한 멤버가 게시글을 관심상품으로 등록했다면
+            boolean liked = likeItemService.isLiked(principalDetails.getMember().getId(), itemId);
+            response.setLikeStatus(liked);
         }
 
         //조회수 증가

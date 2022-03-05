@@ -125,4 +125,12 @@ public class Item {
     public void addViewCount(int currentCount) {
         this.viewCount = currentCount + 1;
     }
+
+    public void addLikeCount(int currentCount) {
+        this.likeCount = currentCount + 1;
+    }
+
+    public void removeLikeCount(int currentCount) {
+        this.likeCount = currentCount - 1;
+    }
 }

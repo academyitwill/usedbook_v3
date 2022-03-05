@@ -34,9 +34,10 @@ function replacePost(post){
     document.querySelector("#likeCount").innerHTML = post.likeCount;
     document.querySelector("#viewCount").innerHTML = post.viewCount;
     document.querySelector("#createTime").innerHTML = post.createTime;
-//    if(post.likeStatus == true){
-//        document.querySelector("#likeButton").classList.add("clicked");
-//    }
+    if(post.likeStatus == true){
+        document.querySelector("#likeButton").classList.add("clicked");
+        document.querySelector("#likeButton").setAttribute("onClick", "dislike()");
+    }
     if(post.memberIsSeller == true){
         document.querySelector("#postMenu")
         .innerHTML = `
