@@ -41,21 +41,23 @@ public class Item {
 
     private LocalDateTime createTime;
 
-    private int likeCount;
-
     private int viewCount;
 
-    private int commentCount;
+    private int likeCount;  //편의상 추가
 
-
+    private int commentCount;   //편의상 추가
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ItemFile> files = new ArrayList<>();
-    //files는 단순히 파일을 가져오기만 할 것이다. item의 외래키는 file이 관리할 것이다.
+    //files는 단순히 파일을 가져오기만 할 것이다. item의 외래키는 file이 관리할 것이다. cascade로 item이 삭제될 때 함께 삭제되도록 한다.
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
-    //comments는 단순히 댓글을 가져오기만 할 것이다. 외래키는 comment가 관리할 것이다.
+    //comments는 단순히 댓글을 가져오기만 할 것이다. 외래키는 comment가 관리할 것이다. cascade로 item이 삭제될 때 함께 삭제되도록 한다.
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<LikeItem> likeItems = new ArrayList<>();
+    //comments는 단순히 댓글을 가져오기만 할 것이다. 외래키는 comment가 관리할 것이다. cascade로 item이 삭제될 때 함께 삭제되도록 한다.
 
 
     @Builder
