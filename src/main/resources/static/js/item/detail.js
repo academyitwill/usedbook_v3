@@ -84,16 +84,14 @@ function like(){
     var like = !button.classList.contains("clicked");
 
     $.ajax({
-        url: "/api/post/like/"+like+"/"+id,
-        type: "get",
+        url: "/api/likeitem/"+id,
+        type: "post",
         success: function(data){
-            if(data >= 1){
-                button.classList.toggle("clicked");
-                if(like == true){
-                    count.innerHTML = parseInt(count.innerHTML) + 1;
-                }else{
-                    count.innerHTML = parseInt(count.innerHTML) - 1;
-                }
+            button.classList.toggle("clicked");
+            if(like == true){
+                count.innerHTML = parseInt(count.innerHTML) + 1;
+            }else{
+                count.innerHTML = parseInt(count.innerHTML) - 1;
             }
         },
         error: function(error){
