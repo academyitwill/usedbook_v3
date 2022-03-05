@@ -63,7 +63,6 @@ public class CommentApiController {
     public ResponseEntity delete(
             @PathVariable Long itemId,
             @PathVariable Long commentId,
-            @Validated @RequestBody CommentDTO.Edit commentDTO,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
         commentService.delete(principalDetails, itemId, commentId);
