@@ -81,18 +81,31 @@ function like(){
     var button = document.querySelector("#likeButton");
     var count = document.querySelector("#likeCount");
 
-    var like = !button.classList.contains("clicked");
-
     $.ajax({
         url: "/api/likeitem/"+id,
         type: "post",
         success: function(data){
             button.classList.toggle("clicked");
-            if(like == true){
-                count.innerHTML = parseInt(count.innerHTML) + 1;
-            }else{
-                count.innerHTML = parseInt(count.innerHTML) - 1;
-            }
+            count.innerHTML = parseInt(count.innerHTML) + 1;
+            button.setAttribute("onClick", "dislike()");
+        },
+        error: function(error){
+            alert(error.responseText);
+        }
+    });
+}
+
+function dislike(){
+    var button = document.querySelector("#likeButton");
+    var count = document.querySelector("#likeCount");
+
+    $.ajax({
+        url: "/api/likeitem/"+id,
+        type: "delete",
+        success: function(data){
+            button.classList.toggle("clicked");
+            count.innerHTML = parseInt(count.innerHTML) - 1;
+            button.setAttribute("onClick", "like()");
         },
         error: function(error){
             alert(error.responseText);

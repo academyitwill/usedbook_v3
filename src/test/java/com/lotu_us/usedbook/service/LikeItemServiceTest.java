@@ -60,5 +60,18 @@ public class LikeItemServiceTest {
         Assertions.assertThat(likeItem.getMember().getEmail()).isEqualTo(member.getEmail());
     }
 
+    @Test
+    @DisplayName("관심상품 해제 성공")
+    void item_Dislike_Success(){
+        //given member, item
+        Long likeItemId = likeItemService.like(principalDetails, itemId);
+
+        //when
+        likeItemService.disLike(principalDetails, itemId);
+
+        //then
+        LikeItem likeItem = likeItemRepository.findById(likeItemId).orElse(null);
+        Assertions.assertThat(likeItem).isNull();
+    }
 
 }

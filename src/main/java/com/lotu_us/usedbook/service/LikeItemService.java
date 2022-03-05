@@ -41,5 +41,21 @@ public class LikeItemService {
         return save.getId();
     }
 
+    /**
+     * 관심상품 해제
+     * @param principalDetails
+     * @param itemId
+     */
+    public void disLike(PrincipalDetails principalDetails, Long itemId) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
 
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
+
+        Long memberId = principalDetails.getMember().getId();
+        likeItemRepository.deleteByMemberIdAndItemId(memberId, itemId);
+    }
 }
