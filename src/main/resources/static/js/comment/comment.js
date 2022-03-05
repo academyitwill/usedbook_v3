@@ -1,24 +1,27 @@
-const postId = window.location.pathname.replace("/post/detail/", "");
-
+const itemId = window.location.pathname.replace("/item/", "");
+let loginMemberNickname = null;
 $(document).ready(function(){
     loadComment();
+    loginMemberNickname = document.querySelector(".loginMemberNickname").value; //"" 또는 닉네임
+    if(loginMemberNickname != ""){
+        document.querySelector(".commentWriter").innerHTML = loginMemberNickname;
+    }
 });
 
-var commentWriteStatus = false;
+
 function loadComment(){
     $.ajax({
-        url: "/api/comment/"+postId,
+        url: "/api/item/"+itemId+"/comment/list",
         type: "get",
-        success: function(data){
+        success: function(commentList){
             //회원인 경우에만 댓글 답글 작성 가능
-            if(data.commentWriteStatus == true){
-                commentWriteStatus = true;
+            if(loginMemberNickname != ""){
                 document.querySelector("#commentForm .input-group textarea").innerHTML = "";
                 document.querySelector("#commentForm .input-group textarea").disabled = false;
                 document.querySelector("#commentForm .input-group button").disabled = false;
             }
 
-            data.commentList.forEach(function(comment){
+            commentList.forEach(function(comment){
                 if(comment.depth == 0){
                     $("#commentList").append(addComment(comment));
                 }else{
@@ -28,7 +31,7 @@ function loadComment(){
         },
         error: function(error){
             alert(error.responseText);
-            window.location.replace("/posts");
+            window.location.replace("/item/list");
         }
     });
 }
@@ -43,11 +46,10 @@ function writeComment(identify, event){
     }
 
     $.ajax({
-        url: "/api/comment/"+postId,
+        url: "/api/item/"+itemId+"/comment",
         type: "post",
         contentType: 'application/json',
         data: JSON.stringify({
-            "postId":postId,
             "content":textarea.value,
             "parentId":parentId,
             "depth":depth
@@ -75,26 +77,21 @@ function updateComment(commentId, event){
     var textarea = $(event.target).parents(".input-group").children("textarea")[0];
 
     $.ajax({
-        url: "/api/comment/"+postId+"/"+commentId,
+        url: "/api/item/"+itemId+"/comment/"+commentId,
         type: "put",
         contentType: 'application/json',
         data: JSON.stringify({
             "content":textarea.value,
         }),
         success: function(updated){
-            if(updated > 0){
-                document.querySelector("#updateForm").remove();
-                $(".c"+commentId+" .commentRow .commentContent")[0].innerHTML = textarea.value;
-                $(".c"+commentId+" .commentRow .commentContent").show();
-                $(".c"+commentId+" .commentRow .commentMenu").show();
-                prevUpdateId = null;
-            }else{
-                alert("수정되지 않았습니다");
-            }
+            document.querySelector("#updateForm").remove();
+            $(".c"+commentId+" .commentRow .commentContent")[0].innerHTML = textarea.value;
+            $(".c"+commentId+" .commentRow .commentContent").show();
+            $(".c"+commentId+" .commentRow .commentMenu").show();
+            prevUpdateId = null;
         },
         error: function(error){
-            alert(error.responseText);
-            //window.location.replace("/posts");
+            alert("수정되지 않았습니다");
         }
     });
 }
@@ -124,26 +121,22 @@ function deleteComment(commentId, event){
 //    });
 
     $.ajax({
-        url: "/api/comment/"+postId+"/"+commentId,
+        url: "/api/item/"+itemId+"/comment/"+commentId,
         type: "delete",
         success: function(deleted){
-            if(deleted > 0){
-                var row = $(event.target).parents(".commentRow");
-                var tags = row.children();
-                for(var i=0; i<tags.length; i++){
-                    if(tags[i].tagName != "I"){
-                        tags[i].remove();
-                    }
+            var row = $(event.target).parents(".commentRow");
+            var tags = row.children();
+            for(var i=0; i<tags.length; i++){
+                if(tags[i].tagName != "I"){
+                    tags[i].remove();
                 }
-
-                var result = `<div> 삭제된 댓글입니다. </div>`;
-                row.append(result);
-            }else{
-                alert("삭제되지 않았습니다");
             }
+
+            var result = `<div> 삭제된 댓글입니다. </div>`;
+            row.append(result);
         },
         error: function(error){
-            alert(error.responseText);
+            alert("삭제되지 않았습니다");
             //window.location.replace("/posts");
         }
     });
@@ -222,12 +215,11 @@ function openReplyForm(identify, event){
     }
 
     var margin = "margin-left:"+(depth * 15)+"px;";
-    var nickname = document.querySelector("#commentForm .commentWriter").innerText;
     var result = `
     <form id="replyForm" class="commentWriteForm" style="${margin}">
         <div class="row">
             <div class="mb-2">
-                <i class="fas fa-user"></i><span class="commentWriter">${nickname}</span>
+                <i class="fas fa-user"></i><span class="commentWriter">${loginMemberNickname}</span>
             </div>
 
             <div class="input-group">
@@ -254,7 +246,8 @@ function addComment(comment){
     }
 
     var replySpan = `<span onclick="openReplyForm('${identify}', event)">답글</span>`;
-    if(commentWriteStatus == false || comment.depth == 2){
+    //로그인하지 않았을 경우, comment의 depth가 2일 경우 답글 불가능
+    if(loginMemberNickname == "" || comment.depth == 2){
         replySpan = "";
     }
 
@@ -262,7 +255,8 @@ function addComment(comment){
     <span              onclick="openUpdateForm('${comment.id}', event)">수정</span>
     <span class="ms-2" onclick="deleteComment('${comment.id}', event)">삭제</span>
     `;
-    if(comment.commentMenu == false){
+    //로그인한자와 댓글작성자가 같지 않다면 수정, 삭제 불가
+    if(loginMemberNickname != comment.writer){
         commentMenu = "";
     }
 
