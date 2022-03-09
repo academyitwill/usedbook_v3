@@ -23,7 +23,20 @@ public class OrderBasketApiController {
             @PathVariable int count,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        orderBasketService.save(principalDetails, itemId, count);
+        Long orderBasketId = orderBasketService.save(principalDetails, itemId, count);
+        return ResponseEntity.status(HttpStatus.OK).body(orderBasketId);
+    }
+
+    /**
+     * 장바구니에 상품 수량 수정
+     */
+    @PutMapping("/item/{itemId}/{count}")
+    public ResponseEntity update(
+            @PathVariable Long itemId,
+            @PathVariable int count,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        orderBasketService.update(principalDetails, itemId, count);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

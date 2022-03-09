@@ -7,6 +7,8 @@ import com.lotu_us.usedbook.domain.entity.OrderBasket;
 import com.lotu_us.usedbook.repository.ItemRepository;
 import com.lotu_us.usedbook.repository.MemberRepository;
 import com.lotu_us.usedbook.repository.OrderBasketRepository;
+import com.lotu_us.usedbook.util.exception.CustomException;
+import com.lotu_us.usedbook.util.exception.ErrorCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +52,26 @@ public class OrderBasketServiceTest {
         Assertions.assertThat(orderBasket.getItem().getTitle()).isEqualTo(item.getTitle());
     }
 
+    @Test
+    @DisplayName("장바구니 담기 실패 - 이미 담은 상품")
+    void basket_save_fail_already_save_item(){
+        Long orderBasketId = orderBasketService.save(principalDetails, item.getId(), 3);
 
+        CustomException customException = org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
+            orderBasketService.save(principalDetails, item.getId(), 5);
+        });
 
+        org.junit.jupiter.api.Assertions.assertEquals(customException.getErrorCode(), ErrorCode.ALREADY_SAVED_BASKET);
+    }
+
+    @Test
+    @DisplayName("장바구니 수량 수정 성공")
+    void basket_update_count_success(){
+        Long orderBasketId = orderBasketService.save(principalDetails, item.getId(), 3);
+        orderBasketService.update(principalDetails, item.getId(), 5);
+
+        OrderBasket orderBasket = orderBasketRepository.findById(orderBasketId).orElse(null);
+        Assertions.assertThat(orderBasket.getCount()).isEqualTo(5);
+    }
 
 }

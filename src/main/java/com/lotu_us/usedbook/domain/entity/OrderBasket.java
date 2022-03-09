@@ -31,4 +31,18 @@ public class OrderBasket {
         this.item = item;
         this.count = count;
     }
+
+    @Override
+    public String toString() {
+        return "OrderBasket{" +
+                "id=" + id +
+                ", member=" + member +
+                ", item=" + item +
+                ", count=" + count +
+                '}';
+    }
+
+    public void changeCount(int count) {
+        this.count = count;
+    }
 }

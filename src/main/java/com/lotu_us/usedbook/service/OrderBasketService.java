@@ -2,6 +2,7 @@ package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.entity.Item;
+import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.entity.OrderBasket;
 import com.lotu_us.usedbook.repository.ItemRepository;
 import com.lotu_us.usedbook.repository.OrderBasketRepository;
@@ -25,22 +26,50 @@ public class OrderBasketService {
      * @param count
      * @exception : 회원이 아닌 경우 ErrorCode.ONLY_MEMBER;
      * @exception : 상품이 존재하지 않는다면 ErrorCode.ID_NOT_FOUND
+     * @exception : 이미 담은 상품이라면 ErrorCode.ALREADY_SAVED_BASKET
      */
     public Long save(PrincipalDetails principalDetails, Long itemId, int count) {
         if(principalDetails == null){
             throw new CustomException(ErrorCode.ONLY_MEMBER);
         }
 
+        Member member = principalDetails.getMember();
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
             new CustomException(ErrorCode.ID_NOT_FOUND)
         );
 
+        orderBasketRepository.findByMemberIdAndItemId(member.getId(), itemId).ifPresent((orderBasket) -> {
+            throw new CustomException(ErrorCode.ALREADY_SAVED_BASKET);
+        });
+
         OrderBasket orderBasket = OrderBasket.builder()
-                .member(principalDetails.getMember())
+                .member(member)
                 .item(item)
                 .count(count).build();
 
         OrderBasket save = orderBasketRepository.save(orderBasket);
         return save.getId();
+    }
+
+    /**
+     * 장바구니 상품 수량 수정
+     * @param principalDetails
+     * @param itemId
+     * @param count
+     * @exception : 회원이 아닌 경우 ErrorCode.ONLY_MEMBER;
+     * @exception : 상품이 존재하지 않는다면 ErrorCode.ID_NOT_FOUND
+     */
+    public void update(PrincipalDetails principalDetails, Long itemId, int count) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Member member = principalDetails.getMember();
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
+
+        OrderBasket orderBasket = orderBasketRepository.findByMemberIdAndItemId(member.getId(), itemId).orElse(null);
+        orderBasket.changeCount(count);
     }
 }
