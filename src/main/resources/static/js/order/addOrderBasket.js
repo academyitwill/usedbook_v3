@@ -2,24 +2,25 @@ function addBasket(){
     var count = document.querySelector("#basketModal .modalMenu .input-group div").innerHTML;
 
     $.ajax({
-        url: "/api/order/basket/"+postId+"/"+count,
+        url: "/api/basket/item/"+id+"/"+count,
         type: "post",
         success: function(data){
             alert("장바구니에 담겼습니다.");
             $(".modal").modal("hide");
         },
         error: function(error){
-            alert(error.responseText);
+            alert(error.responseJSON.message);
             $(".modal").modal("hide");
         }
     });
 }
 
 
-
+let itemPrice;
 function replaceBasket(post){
     document.querySelector(".buyTitle").innerHTML = post.title;
-    document.querySelector(".buyPrice").innerHTML = post.price;
+    document.querySelector(".buyPrice").innerHTML = addComma(post.price);
+    itemPrice = post.price;
 }
 
 //orderBasket.js와 유사
@@ -30,7 +31,6 @@ function changeCount(text, event){
     var buttons = parent.find("button");
 
     var postStock = parseInt($("#stock").text());
-    var postPrice = parseInt($("#price").text());
     var buyPrice = parent.find(".buyPrice");
 
     if(text == "minus" && count > 1){
@@ -41,7 +41,7 @@ function changeCount(text, event){
     }
 
     count = parseInt(countDiv.html());
-    buyPrice.text(count * postPrice);
+    buyPrice.text(addComma(count * itemPrice));
 
     buttons[0].disabled = false;
     buttons[1].disabled = false;
