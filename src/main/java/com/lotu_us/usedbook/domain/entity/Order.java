@@ -35,6 +35,9 @@ public class Order {
     @Builder
     public Order(Member member, List<OrderItem> orderItems) {
         this.member = member;
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setOrder(this);
+        }
         this.orderItems = orderItems;
     }
 

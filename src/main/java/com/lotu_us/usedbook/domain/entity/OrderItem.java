@@ -3,6 +3,8 @@ package com.lotu_us.usedbook.domain.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,5 +26,14 @@ public class OrderItem {
     @Builder
     public OrderItem(Item item) {
         this.item = item;
+    }
+
+    public static List<OrderItem> createList(List<Item> itemList) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (Item item : itemList) {
+            OrderItem orderItem = new OrderItem(item);
+            orderItems.add(orderItem);
+        }
+        return orderItems;
     }
 }
