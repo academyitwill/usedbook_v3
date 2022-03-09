@@ -39,4 +39,17 @@ public class OrderBasketApiController {
         orderBasketService.update(principalDetails, itemId, count);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    /**
+     * 장바구니에 상품 삭제
+     */
+    @DeleteMapping("/item/{itemId}")
+    public ResponseEntity delete(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        orderBasketService.delete(principalDetails, itemId);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
 }

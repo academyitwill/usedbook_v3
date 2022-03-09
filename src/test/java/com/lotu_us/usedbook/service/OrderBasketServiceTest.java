@@ -74,4 +74,14 @@ public class OrderBasketServiceTest {
         Assertions.assertThat(orderBasket.getCount()).isEqualTo(5);
     }
 
+    @Test
+    @DisplayName("장바구니 상품 삭제 성공")
+    void basket_delete_item_success(){
+        Long orderBasketId = orderBasketService.save(principalDetails, item.getId(), 3);
+        orderBasketService.delete(principalDetails, item.getId());
+
+        OrderBasket orderBasket = orderBasketRepository.findById(orderBasketId).orElse(null);
+        Assertions.assertThat(orderBasket).isNull();
+    }
+
 }

@@ -72,4 +72,20 @@ public class OrderBasketService {
         OrderBasket orderBasket = orderBasketRepository.findByMemberIdAndItemId(member.getId(), itemId).orElse(null);
         orderBasket.changeCount(count);
     }
+
+    /**
+     * 장바구니 상품 삭제
+     * @param principalDetails
+     * @param itemId
+     * @exception : 회원이 아닌 경우 ErrorCode.ONLY_MEMBER;
+     */
+    public void delete(PrincipalDetails principalDetails, Long itemId) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Member member = principalDetails.getMember();
+
+        orderBasketRepository.deleteByMemberIdAndItemId(member.getId(), itemId);
+    }
 }
