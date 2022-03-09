@@ -1,0 +1,46 @@
+package com.lotu_us.usedbook.service;
+
+import com.lotu_us.usedbook.auth.PrincipalDetails;
+import com.lotu_us.usedbook.domain.entity.Item;
+import com.lotu_us.usedbook.domain.entity.OrderBasket;
+import com.lotu_us.usedbook.repository.ItemRepository;
+import com.lotu_us.usedbook.repository.OrderBasketRepository;
+import com.lotu_us.usedbook.util.exception.CustomException;
+import com.lotu_us.usedbook.util.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class OrderBasketService {
+    private final ItemRepository itemRepository;
+    private final OrderBasketRepository orderBasketRepository;
+
+    /**
+     * 장바구니에 상품 저장
+     * @param principalDetails
+     * @param itemId
+     * @param count
+     * @exception : 회원이 아닌 경우 ErrorCode.ONLY_MEMBER;
+     * @exception : 상품이 존재하지 않는다면 ErrorCode.ID_NOT_FOUND
+     */
+    public Long save(PrincipalDetails principalDetails, Long itemId, int count) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+            new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
+
+        OrderBasket orderBasket = OrderBasket.builder()
+                .member(principalDetails.getMember())
+                .item(item)
+                .count(count).build();
+
+        OrderBasket save = orderBasketRepository.save(orderBasket);
+        return save.getId();
+    }
+}
