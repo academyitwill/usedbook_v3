@@ -1,6 +1,7 @@
 package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
+import com.lotu_us.usedbook.domain.dto.OrderBasketDTO;
 import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.entity.OrderBasket;
@@ -11,6 +12,9 @@ import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,5 +91,23 @@ public class OrderBasketService {
         Member member = principalDetails.getMember();
 
         orderBasketRepository.deleteByMemberIdAndItemId(member.getId(), itemId);
+    }
+
+    /**
+     * 장바구니 상품 리스트보기
+     * @param principalDetails
+     * @exception : 회원이 아닌 경우 ErrorCode.ONLY_MEMBER;
+     */
+    public List<OrderBasketDTO.Response> list(PrincipalDetails principalDetails) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Member member = principalDetails.getMember();
+        List<OrderBasketDTO.Response> collect = orderBasketRepository.findAllByMemberId(member.getId()).stream()
+                .map(orderBasket -> OrderBasketDTO.entityToDto(orderBasket))
+                .collect(Collectors.toList());
+
+        return collect;
     }
 }

@@ -1,6 +1,7 @@
 package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
+import com.lotu_us.usedbook.domain.dto.OrderBasketDTO;
 import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.entity.OrderBasket;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -82,6 +85,19 @@ public class OrderBasketServiceTest {
 
         OrderBasket orderBasket = orderBasketRepository.findById(orderBasketId).orElse(null);
         Assertions.assertThat(orderBasket).isNull();
+    }
+
+    @Test
+    @DisplayName("장바구니 상품 리스트보기")
+    void basket_item_list(){
+        Long orderBasketId = orderBasketService.save(principalDetails, item.getId(), 3);
+        Item item2 = itemRepository.save(new Item(member, "제목2"));
+        Long orderBasketId2 = orderBasketService.save(principalDetails, item2.getId(), 5);
+
+        List<OrderBasketDTO.Response> list = orderBasketService.list(principalDetails);
+        Assertions.assertThat(list.size()).isEqualTo(2);
+        Assertions.assertThat(list.get(0).getCount()).isEqualTo(3);
+        Assertions.assertThat(list.get(1).getCount()).isEqualTo(5);
     }
 
 }
