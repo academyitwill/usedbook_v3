@@ -1,5 +1,6 @@
 const baseUrl = window.location.pathname;   //posts    //posts/novel
 const queryString = window.location.search;       //?page=4
+const urlParams = new URLSearchParams(location.search);
 
 $(document).ready(function(){
     loadList(null, null);
@@ -11,27 +12,19 @@ $("#title, #salestatus, #createtime, #viewcount").on("click", function(){
 });
 
 function loadList(e_id, e_class){
-
-    var orderText = "";
-    if(queryString == ""){  //쿼리스트링이 비어있으면 ?로 시작해야함
-        orderText = "?";
-    }else{
-        orderText = "&";
-    }
-
     if(e_id != null){
-        orderText = orderText + "otext=" + e_id + "&otype=" + e_class;
+        urlParams.set("sort", e_id+","+e_class);
     }
 
     $.ajax({
-        url: "/api"+baseUrl+queryString+orderText,
+        url: "/api/item/dashboard?"+urlParams,
         type: "get",
         success: function(data){
 
             $("table tbody *").replaceWith();
             $(".pagination *").replaceWith();
 
-            $("table tbody").append(addTR(data.posts));
+            $("table tbody").append(addTR(data.pagination.content));
             $(".pagination").append(addPagination(data.pagination));
         },
         error: function(error){
@@ -51,7 +44,7 @@ function addTR(posts){
                 <th scope="row">${post.id}</th>
                 <td>${post.category}</td>
                 <td style="text-overflow: ellipsis;">
-                    <a href="/post/detail/${post.id}">${post.title}</a><span> (<span>${post.commentCount}</span>)</span>
+                    <a href="/item/${post.id}">${post.title}</a><span> (<span>${post.commentCount}</span>)</span>
                 </td>
                 <td>${post.saleStatus}</td>
                 <td>${post.createTime}</td>

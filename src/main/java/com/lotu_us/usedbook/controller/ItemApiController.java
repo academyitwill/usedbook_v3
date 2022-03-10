@@ -93,4 +93,22 @@ public class ItemApiController {
         return ResponseEntity.status(HttpStatus.OK).body(map);
     }
 
+
+    /**
+     * 대시보드 내가 업로드한 상품 리스트보기
+     * size : 한 페이지 당 조회할 개수 (default 20)
+     * page : 요청할 페이지 번호
+     * sort : 정렬방법 표기. 필드명, 정렬기준 (createTime, desc)
+     */
+    @GetMapping("/dashboard")
+    public ResponseEntity mylist(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size=10, sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        String nickname = principalDetails.getMember().getNickname();
+        Map map = itemService.list(null, "2,"+nickname, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(map);
+    }
+
+
 }

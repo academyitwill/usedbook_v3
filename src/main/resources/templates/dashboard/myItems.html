@@ -24,12 +24,12 @@
     <div class="row">
 
         <div class="col sidebarCol border-end">
-            <div th:replace="fragments/sidebar.html :: sidebar('myPosts')"></div>
+            <div th:replace="fragments/sidebar.html :: sidebar('myItems')"></div>
         </div>
 
         <div class="col">
             <div id="myPostsForm">
-                <h3>내 게시글</h3><br>
+                <h3>내 상품</h3><br>
                 <table class="table table-striped table-hover table-bordered mt-4">
                     <colgroup>
                         <col style="width:10%;">
@@ -69,6 +69,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="/js/pagination.js"></script>
-<script src="/js/dashboard/myPosts.js"></script>
+<script src="/js/dashboard/myItems.js"></script>
 </body>
 </html>

@@ -18,30 +18,30 @@
             </li>
             <li>
                 <a href="#" class="nav-link"
-                   th:href="@{/dashboard/myPosts}" th:classappend="${menu} == 'myPosts' ? 'active'">
+                   th:href="@{/dashboard/myItems?page=1}" th:classappend="${menu} == 'myItems' ? 'active'">
                     <i class="fas fa-file-alt"></i> 내 게시글
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link"
-                   th:href="@{/dashboard/myComments}" th:classappend="${menu} == 'myComments' ? 'active'">
+                   th:href="@{/dashboard/myComments?page=1}" th:classappend="${menu} == 'myComments' ? 'active'">
                     <i class="fas fa-comment"></i> 내 댓글
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link"
-                   th:href="@{/dashboard/myFavorites}" th:classappend="${menu} == 'myFavorites' ? 'active'">
+                   th:href="@{/dashboard/myFavorites?page=1}" th:classappend="${menu} == 'myFavorites' ? 'active'">
                     <i class="fas fa-heart"></i> 관심상품
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link" th:href="@{/order/basket}" th:classappend="${menu} == 'myBasket' ? 'active'">
+                <a href="#" class="nav-link" th:href="@{/basket}" th:classappend="${menu} == 'myBasket' ? 'active'">
                     <i class="fas fa-shopping-basket"></i> 장바구니
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link"
-                   th:href="@{/dashboard/myOrders}" th:classappend="${menu} == 'myOrders' ? 'active'">
+                   th:href="@{/dashboard/myOrders?page=1}" th:classappend="${menu} == 'myOrders' ? 'active'">
                     <i class="fas fa-wallet"></i> 구매목록
                 </a>
             </li>
