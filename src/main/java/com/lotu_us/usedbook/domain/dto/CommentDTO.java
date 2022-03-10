@@ -1,6 +1,7 @@
 package com.lotu_us.usedbook.domain.dto;
 
 import com.lotu_us.usedbook.domain.entity.Comment;
+import com.lotu_us.usedbook.domain.enums.SaleStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,5 +72,25 @@ public class CommentDTO {
         public Edit(String content) {
             this.content = content;
         }
+    }
+
+    @Getter
+    @ToString
+    public static class DashboardRes{
+        private Long itemId;
+        private String saleStatus;
+        private String itemTitle;
+        private String commentContent;
+        private String commentCreateTime;
+    }
+
+    public static DashboardRes entityToDashboardRes(Comment comment){
+        DashboardRes dashboardRes = new DashboardRes();
+        dashboardRes.itemId = comment.getItem().getId();
+        dashboardRes.saleStatus = comment.getItem().getSaleStatus().toString();
+        dashboardRes.itemTitle = comment.getItem().getTitle();
+        dashboardRes.commentContent = comment.getContent();
+        dashboardRes.commentCreateTime = comment.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        return dashboardRes;
     }
 }

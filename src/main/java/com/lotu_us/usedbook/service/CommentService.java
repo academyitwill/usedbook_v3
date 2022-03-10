@@ -4,12 +4,16 @@ import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.CommentDTO;
 import com.lotu_us.usedbook.domain.entity.Comment;
 import com.lotu_us.usedbook.domain.entity.Item;
+import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.repository.CommentRepository;
 import com.lotu_us.usedbook.repository.ItemRepository;
 import com.lotu_us.usedbook.util.exception.CustomException;
 import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,5 +129,22 @@ public class CommentService {
 
         //실제 삭제하진않고 viewStatus를 false로 처리하여 view에서도 삭제된 댓글을 알 수 있게처리한다.
         comment.changeViewStatusFalse();
+    }
+
+    /**
+     * 대시보드 내가 쓴 댓글 리스트
+     * @param pageable
+     * @return
+     */
+    public PageImpl<CommentDTO.DashboardRes> dashboardList(Member member, Pageable pageable) {
+        Page<Comment> byMemberId = commentRepository.findByMemberId(member.getId(), pageable);
+        List<CommentDTO.DashboardRes> list = byMemberId.getContent().stream()
+                .map(comment -> CommentDTO.entityToDashboardRes(comment))
+                .collect(Collectors.toList());
+
+        PageImpl<CommentDTO.DashboardRes> dashboardRes = new PageImpl<>(list, byMemberId.getPageable(), byMemberId.getTotalElements());
+        System.out.println(dashboardRes);
+
+        return dashboardRes;
     }
 }
