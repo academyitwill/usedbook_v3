@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 function loadBasketToOrder(){
     $.ajax({
-        url: "/api/basketToOrder",
+        url: "/api/order",
         type: "get",
         success: function(data){
             $("table tbody *").replaceWith();
@@ -14,7 +14,7 @@ function loadBasketToOrder(){
         },
         error: function(error){
             alert(error.responseText);
-            window.location.replace("/order/basket");
+            window.location.replace("/basket");
         }
     });
 }
@@ -85,29 +85,28 @@ function addTR(orderBasketList){
 
     orderBasketList.forEach(function(basket){
 
-        sum = sum + (basket.count * basket.price);
+        sum = sum + (basket.count * basket.itemPrice);
 
         result = result + `
             <tr>
                 <td>
                     <div style="float:left;">
-                        <div><a href="/post/detail/${basket.id}">${basket.title}</a></div>
-                        <div>판매자 : ${basket.writer}</div>
-                        <div>판매가격 : <span class="postPrice won">${basket.price}</span></div>
+                        <div><a href="/item/${basket.itemId}">${basket.itemTitle}</a></div>
+                        <div>판매가격 : <span class="postPrice won">${addComma(basket.itemPrice)}</span></div>
                         <div><span style="float:left">구매수량 : </span>
                             <div class="orderCount input-group">
-                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('minus', ${basket.id}, event)">-</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('minus', ${basket.itemId}, event)">-</button>
                                 <div class="form-control">${basket.count}</div>
-                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('plus', ${basket.id}, event)">+</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('plus', ${basket.itemId}, event)">+</button>
                             </div>
                         </div>
                     </div>
                 </td>
 
-                <td><span class="buyPrice won">${basket.count * basket.price}</span></td>
-                <input type="hidden" class="postStock" value="${basket.stock}">
+                <td><span class="buyPrice won">${addComma(basket.count * basket.itemPrice)}</span></td>
+                <input type="hidden" class="postStock" value="${basket.itemStock}">
 
-                <input type="hidden" class="postId" value="${basket.id}">
+                <input type="hidden" class="postId" value="${basket.itemId}">
             </tr>
             `;
     });
@@ -127,7 +126,7 @@ function changeCount(text, postId, event){
     var buttons = trs.find(".orderCount button");
 
     var postStock = parseInt(trs.find(".postStock").val());
-    var postPrice = parseInt(trs.find(".postPrice").text());
+    var postPrice = parseInt(trs.find(".postPrice").text().replace(',', ''));
     var buyPrice = trs.find(".buyPrice");
 
     if(text == "minus" && count > 1){
@@ -138,7 +137,7 @@ function changeCount(text, postId, event){
     }
 
     count = parseInt(countDiv.html());
-    buyPrice.text(count * postPrice);
+    buyPrice.text(addComma(count * postPrice));
 
     changeTotalPrice();
 
@@ -160,12 +159,13 @@ function changeTotalPrice(initvalue){
     var sum = 0;
 
     document.querySelectorAll(".buyPrice").forEach(function(price){
-        sum = sum + parseInt(price.innerHTML);
+        var price = price.innerHTML.replace(',', '');
+        sum = sum + parseInt(price);
     });
 
     if(initvalue != null){
         sum = initvalue;
     }
 
-    $(".totalPrice").text(sum);
+    $(".totalPrice").text(addComma(sum));
 }

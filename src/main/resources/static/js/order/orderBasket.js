@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 function loadBasket(){
     $.ajax({
-        url: "/api/order/basket",
+        url: "/api/basket",
         type: "get",
         success: function(data){
             $("table tbody *").replaceWith();
@@ -22,13 +22,13 @@ function loadBasket(){
 function updateBasket(postId, count, event){
 
     $.ajax({
-        url: "/api/order/basket/"+postId+"/"+count,
+        url: "/api/basket/item/"+postId+"/"+count,
         type: "put",
         success: function(data){
 
         },
         error: function(error){
-            alert(error.responseText);
+            alert(error.responseJSON.message);
         }
     });
 }
@@ -37,7 +37,7 @@ function updateBasket(postId, count, event){
 function deleteBasket(postId, event){
 
     $.ajax({
-        url: "/api/order/basket/"+postId,
+        url: "/api/basket/item/"+postId,
         type: "delete",
         success: function(data){
              if(data > 0){
@@ -46,7 +46,7 @@ function deleteBasket(postId, event){
             }
         },
         error: function(error){
-            alert(error.responseText);
+            alert(error.responseJSON.message);
         }
     });
 }
@@ -65,15 +65,17 @@ function basketToOrder(){
     }
 
     $.ajax({
-        url: "/api/basketToOrder",
+        url: "/api/order/temp",
         type: "post",
         contentType: 'application/json',
-        data: JSON.stringify(arr),
+        data: JSON.stringify({
+            "itemIds" : arr
+        }),
         success: function(data){
             window.location.replace("/order");
         },
         error: function(error){
-            alert(error.responseText);
+            alert(error.responseJSON.message);
         }
     });
 }
@@ -90,15 +92,15 @@ function addTR(orderBasketList){
 
     orderBasketList.forEach(function(basket){
 
-        var checkbox = `<input class="form-check-input" type="checkbox" value="${basket.id}" checked>`;
+        var checkbox = `<input class="form-check-input" type="checkbox" value="${basket.itemId}" checked>`;
         var soldout = "";
         var buttonDisabled = "";
         if(basket.saleStatus != "READY"){
-               checkbox = `<input class="form-check-input" type="checkbox" value="${basket.id}" disabled>`;
+               checkbox = `<input class="form-check-input" type="checkbox" value="${basket.itemId}" disabled>`;
                soldout = `<span style="color:red; font-size:1.1em;">[판매 완료된 상품입니다. 삭제해주세요.]</span>`;
                buttonDisabled = "disabled";
         }else{
-            sum = sum + (basket.count * basket.price);
+            sum = sum + (basket.count * basket.itemPrice);
         }
 
         result = result + `
@@ -108,25 +110,24 @@ function addTR(orderBasketList){
                 <td>
                     <div style="float:left;">
                         <div>${soldout}</div>
-                        <div><a href="/post/detail/${basket.id}">${basket.title}</a></div>
-                        <div>판매자 : ${basket.writer}</div>
-                        <div>판매가격 : <span class="postPrice won">${basket.price}</span></div>
+                        <div><a href="/item/${basket.itemId}">${basket.itemTitle}</a></div>
+                        <div>판매가격 : <span class="postPrice won">${addComma(basket.itemPrice)}</span></div>
                         <div><span style="float:left">구매수량 : </span>
                             <div class="orderCount input-group">
-                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('minus', ${basket.id}, event)" ${buttonDisabled}>-</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('minus', ${basket.itemId}, event)" ${buttonDisabled}>-</button>
                                 <div class="form-control">${basket.count}</div>
-                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('plus', ${basket.id}, event)" ${buttonDisabled}>+</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="changeCount('plus', ${basket.itemId}, event)" ${buttonDisabled}>+</button>
                             </div>
                         </div>
                     </div>
 
                     <div style="float:right; font-size:1em;">
-                        <button class="btn btn-sm btn-outline-primary" onclick="deleteBasket(${basket.id}, event)">삭제</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="deleteBasket(${basket.itemId}, event)">삭제</button>
                     </div>
                 </td>
 
-                <td><span class="buyPrice won">${basket.count * basket.price}</span></td>
-                <input type="hidden" class="postStock" value="${basket.stock}">
+                <td><span class="buyPrice won">${addComma(basket.count * basket.itemPrice)}</span></td>
+                <input type="hidden" class="postStock" value="${basket.itemStock}">
             </tr>
             `;
     });
@@ -153,7 +154,8 @@ function changeCount(text, postId, event){
     var buttons = trs.find(".orderCount button");
 
     var postStock = parseInt(trs.find(".postStock").val());
-    var postPrice = parseInt(trs.find(".postPrice").text());
+    var tempPrice = trs.find(".postPrice").text().replace(',', '');
+    var postPrice = parseInt(tempPrice);
     var buyPrice = trs.find(".buyPrice");
 
     if(text == "minus" && count > 1){
@@ -164,7 +166,7 @@ function changeCount(text, postId, event){
     }
 
     count = parseInt(countDiv.html());
-    buyPrice.text(count * postPrice);
+    buyPrice.text(addComma(count * postPrice));
 
     changeTotalPrice();
     updateBasket(postId, count);
@@ -193,7 +195,7 @@ function changeTotalPrice(initvalue){
         sum = initvalue;
     }
 
-    $(".totalPrice").text(sum);
+    $(".totalPrice").text(addComma(sum));
 }
 
 

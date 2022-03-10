@@ -3,6 +3,7 @@ package com.lotu_us.usedbook.auth;
 import com.lotu_us.usedbook.auth.userinfo.Oauth2UserInfo;
 import com.lotu_us.usedbook.domain.entity.Member;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -18,6 +20,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private Member member;
     private Oauth2UserInfo oauth2UserInfo;
+    @Setter
+    private List<Long> itemIdList = null;
 
     //form로그인 시 사용
     public PrincipalDetails(Member member) {
