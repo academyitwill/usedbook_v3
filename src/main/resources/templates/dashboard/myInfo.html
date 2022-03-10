@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="fragments/head.html :: head"></th:block>
     <title>Title</title>
@@ -22,7 +22,8 @@
             <div th:replace="fragments/sidebar.html :: sidebar('myInfo')"></div>
         </div>
 
-        <div class="col">
+        <div class="col"
+            th:with="loginMember = ${#authentication.getPrincipal().member}">
             <div id="myInfoForm">
                 <h3>회원정보</h3><br>
                 <div id="id" th:text="${loginMember.id}" style="display:none;"></div>
@@ -46,26 +47,28 @@
 
                 <hr>
 
-                <div class="mb-3">
-                    <label for="oldPassword" class="form-label">현재 비밀번호</label>
-                    <input type="password" class="form-control" id="oldPassword">
-                    <div id="oldPasswordHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
-                </div>
+                <div th:if="${loginMember.provider == null}">
+                    <div class="mb-3">
+                        <label for="oldPassword" class="form-label">현재 비밀번호</label>
+                        <input type="password" class="form-control" id="oldPassword">
+                        <div id="oldPasswordHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="newPassword" class="form-label">새 비밀번호</label>
-                    <input type="password" class="form-control" id="newPassword">
-                    <div id="newPasswordHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
-                </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">새 비밀번호</label>
+                        <input type="password" class="form-control" id="newPassword">
+                        <div id="newPasswordHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="newPasswordConfirm" class="form-label">새 비밀번호 확인</label>
-                    <input type="password" class="form-control" id="newPasswordConfirm">
-                    <div id="newPasswordConfirmHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
-                </div>
+                    <div class="mb-3">
+                        <label for="newPasswordConfirm" class="form-label">새 비밀번호 확인</label>
+                        <input type="password" class="form-control" id="newPasswordConfirm">
+                        <div id="newPasswordConfirmHelp" class="form-text" style="display:none;">We'll never share your email with anyone else.</div>
+                    </div>
 
-                <div class="text-center mb-5">
-                    <a class="mb-2 mt-1 btn rounded-4 btn-primary" type="button" onClick="passwordUpdate()">비밀번호 수정</a>
+                    <div class="text-center mb-5">
+                        <a class="mb-2 mt-1 btn rounded-4 btn-primary" type="button" onClick="passwordUpdate()">비밀번호 수정</a>
+                    </div>
                 </div>
 
             </div>
@@ -76,6 +79,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script src="../js/dashboard/myInfo.js"></script>
+<script src="/js/validutil.js"></script>
+<script src="/js/dashboard/myInfo.js"></script>
 </body>
 </html>

@@ -131,13 +131,9 @@ class MemberServiceTest {
                 .nickname("12").password("12").email("12@12").build();
         Long memberId = memberService.join(memberDTO);
 
-        //when
+        //when //then
         MemberDTO.UpdatePassword updateDTO = new MemberDTO.UpdatePassword("12", "133");
         memberService.updatePassword(memberId, updateDTO);
-
-        //then
-        Member byEmail = memberRepository.findByEmail("12@12").orElse(null);
-        Assertions.assertThat(byEmail.getPassword()).isEqualTo("133");
     }
 
     @Test

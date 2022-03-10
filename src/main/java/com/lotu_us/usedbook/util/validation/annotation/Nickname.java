@@ -30,5 +30,5 @@ public @interface Nickname {
 
     //파라미터
     public int min() default 2;
-    public int max() default 10;
+    public int max() default 20;
 }

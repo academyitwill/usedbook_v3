@@ -3,6 +3,7 @@ package com.lotu_us.usedbook.domain.dto;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.util.validation.annotation.Email;
 import com.lotu_us.usedbook.util.validation.annotation.Nickname;
+import com.lotu_us.usedbook.util.validation.annotation.Password;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -33,10 +34,10 @@ public class MemberDTO {
     @Getter
     @ToString
     public static class UpdatePassword {
-        //@Password
+//        @Password
         private String oldPassword;
 
-        //@Password
+        @Password
         private String newPassword;
 
         public UpdatePassword(String oldPassword, String newPassword) {

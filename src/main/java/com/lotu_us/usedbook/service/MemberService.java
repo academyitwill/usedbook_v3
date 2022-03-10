@@ -9,11 +9,13 @@ import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -66,12 +68,17 @@ public class MemberService {
      * @param memberId
      * @param updateNickname
      * @exception : 일치하는 memberId 없으면 -> ErrorCode.ID_NOT_FOUND
+     * @exception : 중복되는 닉네임이 있다면 -> ErrorCode.NICKNAME_DUPLICATED
      * @exception : 닉네임이 이전과 같다면 -> ErrorCode.NICKNAME_EQUAL_PREVIOUS
      */
     public void updateNickname(Long memberId, String updateNickname) {
         Member member = memberRepository.findById(memberId).orElseThrow(() ->
             new CustomException(ErrorCode.ID_NOT_FOUND)
         );
+
+        memberRepository.findByNickname(updateNickname).ifPresent((member1) -> {
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        });
 
         if(member.getNickname().equals(updateNickname)){
             throw new CustomException(ErrorCode.NICKNAME_EQUAL_PREVIOUS);
@@ -99,11 +106,12 @@ public class MemberService {
         }
 
         //기존 비밀번호와 새 비밀번호가 같다면 변경하지 않는다.
-        if(memberDTO.getOldPassword().equals(memberDTO.getNewPassword())){
+        if(bCryptPasswordEncoder.matches(memberDTO.getNewPassword(), member.getPassword())){
             throw new CustomException(ErrorCode.PASSWORD_EQUAL_PREVIOUS);
         }
 
-        member.changePassword(memberDTO.getNewPassword());
+        String encodePassword = bCryptPasswordEncoder.encode(memberDTO.getNewPassword());
+        member.changePassword(encodePassword);
     }
 
 
