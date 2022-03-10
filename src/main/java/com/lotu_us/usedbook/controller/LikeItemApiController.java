@@ -7,6 +7,8 @@ import com.lotu_us.usedbook.service.LikeItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,7 +50,10 @@ public class LikeItemApiController {
      * 회원별 관심상품 목록
      */
     @GetMapping("/list")
-    public ResponseEntity list(@AuthenticationPrincipal PrincipalDetails principalDetails, Pageable pageable){
+    public ResponseEntity list(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size=10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ){
         PageImpl<ItemDTO.Response> list = likeItemService.list(principalDetails, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
