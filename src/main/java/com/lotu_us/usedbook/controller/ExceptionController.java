@@ -4,11 +4,16 @@ import com.lotu_us.usedbook.util.error.ErrorResponse;
 import com.lotu_us.usedbook.util.exception.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @ControllerAdvice   //모든 컨트롤러에서 발생할 수 있는 예외를 잡아 처리할 수 있다.
@@ -39,5 +44,24 @@ public class ExceptionController {
                 .message(message)
                 .httpStatus(HttpStatus.BAD_REQUEST).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception){
+        System.out.println("==========================");
+        BindingResult bindingResult = exception.getBindingResult();
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+
+        List<ErrorResponse> errorResponseList = new ArrayList<>();
+        for (FieldError fieldError : fieldErrors) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .cause(fieldError.getField())
+                    .code(fieldError.getCode())
+                    .message(fieldError.getDefaultMessage())
+                    .httpStatus(HttpStatus.BAD_REQUEST).build();
+            errorResponseList.add(errorResponse);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseList);
     }
 }

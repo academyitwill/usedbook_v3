@@ -1,6 +1,9 @@
 package com.lotu_us.usedbook.domain.entity;
 
+import com.lotu_us.usedbook.domain.dto.OrderDTO;
 import com.lotu_us.usedbook.domain.enums.OrderStatus;
+import com.lotu_us.usedbook.domain.enums.Payment;
+import com.lotu_us.usedbook.repository.ItemRepository;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,18 +30,26 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    private LocalDateTime orderTime = LocalDateTime.now();
-
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.COMPLETE;
 
+    @Embedded
+    private Address address;
+
+    @Enumerated(EnumType.STRING)
+    private Payment payment;
+
+    private LocalDateTime orderTime = LocalDateTime.now();
+
     @Builder
-    public Order(Member member, List<OrderItem> orderItems) {
+    public Order(Member member, List<OrderItem> orderItems, Address address, Payment payment) {
         this.member = member;
         for (OrderItem orderItem : orderItems) {
             orderItem.setOrder(this);
         }
         this.orderItems = orderItems;
+        this.address = address;
+        this.payment = payment;
     }
 
 
@@ -48,8 +59,10 @@ public class Order {
                 "id=" + id +
                 ", member=" + member +
                 ", orderItems=" + orderItems +
-                ", orderTime=" + orderTime +
                 ", orderStatus=" + orderStatus +
+                ", address=" + address +
+                ", payment=" + payment +
+                ", orderTime=" + orderTime +
                 '}';
     }
 }

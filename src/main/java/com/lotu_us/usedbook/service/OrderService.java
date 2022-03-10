@@ -50,13 +50,48 @@ public class OrderService {
             throw new CustomException(ErrorCode.ONLY_MEMBER);
         }
 
-        List<Item> itemList = itemRepository.findAllByIdIn(orderDTO.getItemIds());
-        List<OrderItem> orderItemList = OrderItem.createList(itemList);
+        List<OrderItem> orderItemList = OrderItem.createList(itemRepository, orderDTO);
+        //order에 createitem 주입
         Order order = Order.builder()
                 .member(principalDetails.getMember())
-                .orderItems(orderItemList).build();
+                .orderItems(orderItemList)
+                .address(orderDTO.getAddress())
+                .payment(orderDTO.getPayment()).build();
 
         Order save = orderRepository.save(order);
         return save.getId();
+    }
+
+    /**
+     * 주문 상세보기
+     * @param principalDetails
+     * @param orderId
+     * @return
+     */
+    public OrderDTO.Response detail(PrincipalDetails principalDetails, Long orderId) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+        OrderDTO.Response response = OrderDTO.entityToDTO(order);
+        return response;
+    }
+
+    /**
+     * 주문 리스트
+     * @param principalDetails
+     * @return
+     */
+    public List<OrderDTO.ResponseList> list(PrincipalDetails principalDetails) {
+        if(principalDetails == null){
+            throw new CustomException(ErrorCode.ONLY_MEMBER);
+        }
+
+        List<Order> orderList = orderRepository.findAllByMemberId(principalDetails.getMember().getId());
+        List<OrderDTO.ResponseList> responseList = orderList.stream()
+                .map(order -> OrderDTO.entityToDTOList(order))
+                .collect(Collectors.toList());
+        return responseList;
     }
 }

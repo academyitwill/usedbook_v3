@@ -188,7 +188,7 @@ function changeTotalPrice(initvalue){
     var trs = $("input[type='checkbox']:checked").parents("tr");
 
     trs.find(".buyPrice").each(function(){
-        sum = sum + parseInt(this.innerHTML);
+        sum = sum + parseInt(this.innerHTML.replace(',',''));
     });
 
     if(initvalue != null){

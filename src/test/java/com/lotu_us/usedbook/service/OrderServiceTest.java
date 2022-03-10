@@ -2,9 +2,11 @@ package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.OrderDTO;
+import com.lotu_us.usedbook.domain.entity.Address;
 import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.entity.Order;
+import com.lotu_us.usedbook.domain.enums.Payment;
 import com.lotu_us.usedbook.repository.ItemRepository;
 import com.lotu_us.usedbook.repository.MemberRepository;
 import com.lotu_us.usedbook.repository.OrderRepository;
@@ -16,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -31,7 +32,7 @@ public class OrderServiceTest {
     private Item item1;
     private Item item2;
     private PrincipalDetails principalDetails;
-    private List<Long> itemList = new ArrayList<>();
+    private OrderDTO.Save orderDTO = new OrderDTO.Save();
 
     @BeforeEach
     void before(){
@@ -40,20 +41,44 @@ public class OrderServiceTest {
         item2 = itemRepository.save(new Item(member, "제목2"));
         principalDetails = new PrincipalDetails(member);
 
-        itemList.add(item1.getId());
-        itemList.add(item2.getId());
+        orderDTO.getOrderItemsList().add(new OrderDTO.OrderItems(item1.getId(), 3));
+        orderDTO.getOrderItemsList().add(new OrderDTO.OrderItems(item2.getId(), 5));
+        orderDTO.setAddress(new Address("12345", "도로명", "상세", "추가정보"));
+        orderDTO.setPayment(Payment.CARD);
         System.out.println("===============================================================================================================================");
     }
 
     @Test
     @DisplayName("주문하기 성공")
     void order_save_success(){
-        OrderDTO.Save orderDTO = new OrderDTO.Save(itemList);
-
         Long orderId = orderService.save(principalDetails, orderDTO);
         Order order = orderRepository.findById(orderId).orElse(null);
         Assertions.assertThat(order.getId()).isEqualTo(orderId);
-        Assertions.assertThat(order.getOrderItems().size()).isEqualTo(itemList.size());
+        Assertions.assertThat(order.getOrderItems().size()).isEqualTo(orderDTO.getOrderItemsList().size());
         Assertions.assertThat(order.getOrderItems().get(0).getItem().getTitle()).isEqualTo(item1.getTitle());
     }
+
+
+    @Test
+    @DisplayName("주문 상세정보 보여주기 성공")
+    void order_detail_success(){
+        Long orderId = orderService.save(principalDetails, orderDTO);
+        OrderDTO.Response response = orderService.detail(principalDetails, orderId);
+
+        Assertions.assertThat(response.getOrderId()).isEqualTo(orderId);
+        Assertions.assertThat(response.getOrderItems().get(0).getItemTitle()).isEqualTo(item1.getTitle());
+        Assertions.assertThat(response.getOrderItems().size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("주문 리스트 보여주기 성공")
+    void order_list_success(){
+        Long orderId = orderService.save(principalDetails, orderDTO);
+        List<OrderDTO.ResponseList> responseList = orderService.list(principalDetails);
+
+        List<Order> allByMemberId = orderRepository.findAllByMemberId(member.getId());
+        Assertions.assertThat(responseList.size()).isEqualTo(allByMemberId.size());
+        Assertions.assertThat(responseList.get(0).getOrderId()).isEqualTo(allByMemberId.get(0).getId());
+    }
+
 }

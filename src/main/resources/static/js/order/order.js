@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 function loadBasketToOrder(){
     $.ajax({
-        url: "/api/order",
+        url: "/api/order/temp",
         type: "get",
         success: function(data){
             $("table tbody *").replaceWith();
@@ -43,12 +43,12 @@ function saveOrder(){
     var postIds = document.querySelectorAll(".postId");
     postIds.forEach(function(postId){
         var post = {
-            postId:0,
-            count:0
+            itemId:0,
+            itemCount:0
         }
 
-        post.postId = postId.value;
-        post.count = $(postId).parents("tr").find(".orderCount div").text();
+        post.itemId = postId.value;
+        post.itemCount = $(postId).parents("tr").find(".orderCount div").text();
         postList.push(post);
     });
 
@@ -58,7 +58,7 @@ function saveOrder(){
         type: "post",
         contentType: 'application/json',
         data: JSON.stringify({
-            "postList" : postList,
+            "orderItemsList" : postList,
             "payment" : payment,
             "address" : {
                 "postcode" : postcode,
@@ -68,7 +68,7 @@ function saveOrder(){
             }
         }),
         success: function(orderId){
-            window.location.replace("/order/detail/"+orderId);
+            window.location.replace("/order/"+orderId);
         },
         error: function(error){
             alert(error.responseText);

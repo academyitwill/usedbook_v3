@@ -4,6 +4,7 @@ import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.OrderBasketDTO;
 import com.lotu_us.usedbook.domain.dto.OrderDTO;
 import com.lotu_us.usedbook.service.OrderService;
+import com.lotu_us.usedbook.util.aop.ReturnBindingResultError;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,22 +34,48 @@ public class OrderApiController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @GetMapping("")
+    /**
+     * 장바구니에서 주문하기로 선택한 상품들 리스트 반환
+     */
+    @GetMapping("/temp")
     public ResponseEntity load(@AuthenticationPrincipal PrincipalDetails principalDetails){
         List<OrderBasketDTO.Response> load = orderService.load(principalDetails.getItemIdList());
         return ResponseEntity.status(HttpStatus.OK).body(load);
     }
 
-
     /**
      * 주문하기
      */
     @PostMapping("")
+    @ReturnBindingResultError
     public ResponseEntity save(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Validated @RequestBody OrderDTO.Save orderDTO
     ){
-        orderService.save(principalDetails, orderDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        Long orderId = orderService.save(principalDetails, orderDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(orderId);
     }
+
+
+    /**
+     * 주문상세보기
+     */
+    @GetMapping("/{orderId}")
+    public ResponseEntity detail(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        OrderDTO.Response detail = orderService.detail(principalDetails, orderId);
+        return ResponseEntity.status(HttpStatus.OK).body(detail);
+    }
+
+    /**
+     * 주문 리스트 보기
+     */
+    @GetMapping("/list")
+    public ResponseEntity list(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<OrderDTO.ResponseList> list = orderService.list(principalDetails);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
+    }
+
 }
