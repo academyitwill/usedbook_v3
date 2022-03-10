@@ -16,6 +16,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -74,11 +78,11 @@ public class OrderServiceTest {
     @DisplayName("주문 리스트 보여주기 성공")
     void order_list_success(){
         Long orderId = orderService.save(principalDetails, orderDTO);
-        List<OrderDTO.ResponseList> responseList = orderService.list(principalDetails);
+        Pageable pageable = PageRequest.of(0, 10);
+        PageImpl<OrderDTO.ResponseList> list = orderService.list(principalDetails, pageable);
 
-        List<Order> allByMemberId = orderRepository.findAllByMemberId(member.getId());
-        Assertions.assertThat(responseList.size()).isEqualTo(allByMemberId.size());
-        Assertions.assertThat(responseList.get(0).getOrderId()).isEqualTo(allByMemberId.get(0).getId());
+        Assertions.assertThat(list.getContent().get(0).getOrderItems().size()).isEqualTo(orderDTO.getOrderItemsList().size());
+        Assertions.assertThat(list.getContent().get(0).getOrderId()).isEqualTo(orderId);
     }
 
 }

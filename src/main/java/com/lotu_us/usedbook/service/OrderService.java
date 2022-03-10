@@ -3,7 +3,6 @@ package com.lotu_us.usedbook.service;
 import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.OrderBasketDTO;
 import com.lotu_us.usedbook.domain.dto.OrderDTO;
-import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.entity.Order;
 import com.lotu_us.usedbook.domain.entity.OrderItem;
 import com.lotu_us.usedbook.repository.ItemRepository;
@@ -12,6 +11,9 @@ import com.lotu_us.usedbook.repository.OrderRepository;
 import com.lotu_us.usedbook.util.exception.CustomException;
 import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,17 +83,22 @@ public class OrderService {
     /**
      * 주문 리스트
      * @param principalDetails
+     * @param pageable
      * @return
      */
-    public List<OrderDTO.ResponseList> list(PrincipalDetails principalDetails) {
+    public PageImpl<OrderDTO.ResponseList> list(PrincipalDetails principalDetails, Pageable pageable) {
         if(principalDetails == null){
             throw new CustomException(ErrorCode.ONLY_MEMBER);
         }
 
-        List<Order> orderList = orderRepository.findAllByMemberId(principalDetails.getMember().getId());
-        List<OrderDTO.ResponseList> responseList = orderList.stream()
+        Long memberId = principalDetails.getMember().getId();
+        Page<Order> byMemberId = orderRepository.findByMemberId(memberId, pageable);
+        List<OrderDTO.ResponseList> content = byMemberId.getContent().stream()
                 .map(order -> OrderDTO.entityToDTOList(order))
                 .collect(Collectors.toList());
-        return responseList;
+
+        PageImpl<OrderDTO.ResponseList> list = new PageImpl<>(content, byMemberId.getPageable(), byMemberId.getTotalElements());
+
+        return list;
     }
 }

@@ -7,6 +7,11 @@ import com.lotu_us.usedbook.service.OrderService;
 import com.lotu_us.usedbook.util.aop.ReturnBindingResultError;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -73,8 +78,11 @@ public class OrderApiController {
      * 주문 리스트 보기
      */
     @GetMapping("/list")
-    public ResponseEntity list(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<OrderDTO.ResponseList> list = orderService.list(principalDetails);
+    public ResponseEntity list(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PageableDefault(size=10, sort = "orderTime", direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        PageImpl<OrderDTO.ResponseList> list = orderService.list(principalDetails, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
