@@ -2,7 +2,6 @@ package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.ItemDTO;
-import com.lotu_us.usedbook.domain.dto.LikeItemDTO;
 import com.lotu_us.usedbook.domain.entity.LikeItem;
 import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.enums.Category;
@@ -14,6 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,13 +85,12 @@ public class LikeItemServiceTest {
         Long likeItemId1 = likeItemService.like(principalDetails, itemId);
 
         //when
-        List<LikeItemDTO.Response> list = likeItemService.list(principalDetails);
+        Pageable pageable = PageRequest.of(0, 10);
+        PageImpl<ItemDTO.Response> list = likeItemService.list(principalDetails, pageable);
 
         //then
-        List<LikeItem> allByMember = likeItemRepository.findAllByMemberId(member.getId());
-
-        Assertions.assertThat(allByMember.size()).isEqualTo(1);
-        Assertions.assertThat(allByMember.get(0).getMember().getEmail()).isEqualTo(member.getEmail());
-        Assertions.assertThat(allByMember.get(0).getItem().getId()).isEqualTo(itemId);
+        Assertions.assertThat(list.getContent().size()).isEqualTo(1);
+        Assertions.assertThat(list.getContent().get(0).getSeller()).isEqualTo(member.getNickname());
+        Assertions.assertThat(list.getContent().get(0).getId()).isEqualTo(itemId);
     }
 }

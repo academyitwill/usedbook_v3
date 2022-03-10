@@ -1,9 +1,12 @@
 package com.lotu_us.usedbook.controller;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
+import com.lotu_us.usedbook.domain.dto.ItemDTO;
 import com.lotu_us.usedbook.domain.dto.LikeItemDTO;
 import com.lotu_us.usedbook.service.LikeItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,9 +47,9 @@ public class LikeItemApiController {
     /**
      * 회원별 관심상품 목록
      */
-    @GetMapping("/list/member/{memberId}")
-    public ResponseEntity list(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<LikeItemDTO.Response> list = likeItemService.list(principalDetails);
+    @GetMapping("/list")
+    public ResponseEntity list(@AuthenticationPrincipal PrincipalDetails principalDetails, Pageable pageable){
+        PageImpl<ItemDTO.Response> list = likeItemService.list(principalDetails, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 }

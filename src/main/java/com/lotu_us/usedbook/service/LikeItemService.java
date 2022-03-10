@@ -1,6 +1,7 @@
 package com.lotu_us.usedbook.service;
 
 import com.lotu_us.usedbook.auth.PrincipalDetails;
+import com.lotu_us.usedbook.domain.dto.ItemDTO;
 import com.lotu_us.usedbook.domain.dto.LikeItemDTO;
 import com.lotu_us.usedbook.domain.entity.Item;
 import com.lotu_us.usedbook.domain.entity.LikeItem;
@@ -9,6 +10,9 @@ import com.lotu_us.usedbook.repository.LikeItemRepository;
 import com.lotu_us.usedbook.util.exception.CustomException;
 import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,17 +74,20 @@ public class LikeItemService {
      * @param principalDetails
      * @return
      */
-    public List<LikeItemDTO.Response> list(PrincipalDetails principalDetails) {
+    public PageImpl<ItemDTO.Response> list(PrincipalDetails principalDetails, Pageable pageable) {
         if(principalDetails == null){
             throw new CustomException(ErrorCode.ONLY_MEMBER);
         }
 
         Long memberId = principalDetails.getMember().getId();
-        List<LikeItemDTO.Response> collect = likeItemRepository.findAllByMemberId(memberId).stream()
+        Page<LikeItem> byMemberId = likeItemRepository.findByMemberId(memberId, pageable);
+        List<ItemDTO.Response> list = byMemberId.getContent().stream()
                 .map(likeItem -> LikeItemDTO.entityToDTO(likeItem))
                 .collect(Collectors.toList());
 
-        return collect;
+        PageImpl<ItemDTO.Response> responses = new PageImpl<>(list, byMemberId.getPageable(), byMemberId.getTotalElements());
+
+        return responses;
     }
 
     /**
