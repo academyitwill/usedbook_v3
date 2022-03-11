@@ -2,6 +2,7 @@ package com.lotu_us.usedbook.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class DashboardController {
@@ -28,5 +29,10 @@ public class DashboardController {
     @GetMapping("/dashboard/myOrders")
     public String myOrders(){
         return "dashboard/myOrders";
+    }
+
+    @GetMapping({"/dashboard/myChat", "/dashboard/myChat/{receiverNickname}"})
+    public String myChat(@PathVariable(required = false) String receiverNickname){
+        return "dashboard/myChat";
     }
 }
