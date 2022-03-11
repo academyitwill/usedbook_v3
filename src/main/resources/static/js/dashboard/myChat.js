@@ -1,14 +1,3 @@
-//로그인 기능 대체
-//const userId = prompt("아이디를 입력해주세요 : ");
-//const username = prompt("이름을 입력해주세요 : ");
-//fetch(`http://${location.host}/login/${userId}/${username}`, {
-//    method: "post"
-//})
-//.then((response) => {
-//    console.log("ok");
-//    connectStomp();
-//});
-
 document.addEventListener("DOMContentLoaded", function(){
     connectStomp();
 });
@@ -27,14 +16,16 @@ function connectStomp(){
     ws.connect({}, function(){
         console.log("connection open");
 
-        ws.subscribe("/api/chat/receive/message", function(event){
+        ws.subscribe("/api/chat/receive/message/"+myNickname, function(event){
             let data = JSON.parse(event.body);
             let senderNickname = data.senderNickname;
             let message = data.message;
             let time = data.sendTime;
 
-            if(senderNickname != myNickname){
-                receive(senderNickname, message, time);
+            if(senderNickname != myNickname){   //받은 메시지가 내가 작성한 것인 경우 제외
+                if(senderNickname == yourNickname){     //받은 메시지가 대화하고 있는 상대이어야함
+                    receive(senderNickname, message, time);
+                }
             }
             //스크롤 맨 아래로
             document.querySelector(".msg_history").scrollTop = document.querySelector(".msg_history").scrollHeight;
@@ -57,7 +48,7 @@ $("input.write_msg").on("keyup", function(event){
 function send(){
     let message = $("input.write_msg").val();
     //ws.send(message);   //메시지 서버로 전송
-    ws.send("/api/chat/send/message", {}, JSON.stringify({
+    ws.send("/api/chat/send/message/"+yourNickname, {}, JSON.stringify({
         "senderNickname" : myNickname,
         "message" : message
     }));

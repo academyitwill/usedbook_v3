@@ -11,6 +11,7 @@ import com.lotu_us.usedbook.util.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,23 +30,13 @@ public class ChatApiController {
     private final ChatRepository chatRepository;
 
 
-    @PostMapping("/login/{email}/{nickname}")
-    public ResponseEntity login(@PathVariable String email, @PathVariable String nickname, HttpSession session){
-        Member loginMember = new Member(email, nickname);
-
-        session.setAttribute("loginMember", loginMember);
-        System.out.println("세션 저장");
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
-
-
-    @MessageMapping("/message") //StompConfig에 적힌 setApplicationDestinationPrefixes 제외해서 작성한다.
-    public void message(
-            @RequestBody ChatDTO.Send chatDTO,
-            @AuthenticationPrincipal PrincipalDetails principalDetails
-    ) throws Exception{
-
-        Member receiver = principalDetails.getMember();
+    @MessageMapping("/message/{nickname}") //StompConfig에 적힌 setApplicationDestinationPrefixes 제외해서 작성한다.
+    public void message(@RequestBody ChatDTO.Send chatDTO, @DestinationVariable String nickname) throws Exception{
+        //@AuthenticationPrincipal PrincipalDetails principalDetails 은 Rest, Mvc 메서드에서 동작한다. MessageMapping에서는 동작하지 않는다.
+        //@PathVariable도 마찬가지이다. @DestinationVariable을 사용하자.
+        Member receiver = memberRepository.findByNickname(nickname).orElseThrow(() ->
+                new CustomException(ErrorCode.ID_NOT_FOUND)
+        );
 
         Member sender = memberRepository.findByNickname(chatDTO.getSenderNickname()).orElseThrow(() ->
                 new CustomException(ErrorCode.ID_NOT_FOUND)
@@ -59,7 +50,9 @@ public class ChatApiController {
 
         ChatDTO.Receive receive = ChatDTO.entityToDTO(chat);
 
-        template.convertAndSend("/api/chat/receive/message", receive);
+//        System.out.println("receiver : " + receiver);
+//        System.out.println("sender : " + sender);
+        template.convertAndSend("/api/chat/receive/message/"+nickname, receive);
         // StompConfig에 적힌 enableSimpleBroker 도 포함해서 작성해야한다.
     }
 }
