@@ -12,9 +12,12 @@ import com.lotu_us.usedbook.util.exception.CustomException;
 import com.lotu_us.usedbook.util.exception.ErrorCode;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.TypeCache;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -229,7 +233,22 @@ public class ItemService {
     }
 
 
+    /**
+     * 인덱스페이지
+     * @return
+     */
+    public Map<String, List> index(int count) {
+        Map<String, List> map = new HashMap<>();
 
+        for (Category category : Category.values()) {
+            List<Item> categoryList = itemRepository.findAllByCategory(category, PageRequest.of(0, count, Sort.by("createTime").descending()));
+            List<ItemDTO.ResponseIndex> indexList = categoryList.stream()
+                    .map(item -> ItemDTO.entityToDTOIndex(item))
+                    .collect(Collectors.toList());
+            map.put(category.toString().toLowerCase(), indexList);
+        }
+        return map;
+    }
 }
 
 

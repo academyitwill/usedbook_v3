@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ItemDTO {
+
+
     @Getter
     @ToString
     public static class Write{
@@ -114,4 +116,27 @@ public class ItemDTO {
         return listResponse;
     }
 
+
+    @Getter
+    @ToString
+    public static class ResponseIndex{
+        private Long id;
+        private String title;
+        private int price;
+        private String fileName;
+    }
+
+    public static ResponseIndex entityToDTOIndex(Item item) {
+        ResponseIndex index = new ResponseIndex();
+        index.id = item.getId();
+        index.title = item.getTitle();
+        index.price = item.getPrice();
+        if(item.getFiles().size() == 0){
+            index.fileName = "";
+        }else{
+            index.fileName = item.getFiles().get(0).getFileName();
+        }
+
+        return index;
+    }
 }

@@ -8,7 +8,7 @@ $(document).ready(function(){
 
 function saveList(){
     $.ajax({
-        url: "/api/posts/allCategoryListForIndex?count="+cardCount,
+        url: "/api/item/index",
         type: "get",
         success: function(categoryList){
             for(var key in categoryList){
@@ -31,19 +31,17 @@ function replaceSlide(category, postList){
     for(var i=0; i<cardCount; i++){
         var title = "아직 게시글이 없어요😥";
         var price = "";
-        var stock = "";
         var imgsrc = "https://plchldr.co/i/245x180";
         var postlink = "#";
 
         if(i < postList.length){    //게시글이 10개미만이면 swiper 오류생김! 게시글이 있는 것만 내용 추가해준다
             title = postList[i].title;
-            stock = postList[i].stock +"개";
             price = postList[i].price +"원";
-            var fileName = postList[i].fileNames;
+            var fileName = postList[i].fileName;
             if(fileName.length != 0){
-                imgsrc = "/api/image/"+fileName[0];
+                imgsrc = "/api/image/"+fileName;
             }
-            postlink = "/post/detail/"+postList[i].id;
+            postlink = "/item/"+postList[i].id;
         }
 
         result = result + `
@@ -51,7 +49,6 @@ function replaceSlide(category, postList){
             <img class="swiper-lazy" src="${imgsrc}">
             <div class="card-body">
                 <span>${title}</span><br>
-                <span>${stock}</span><br>
                 <span>${price}</span>
             </div>
         </a>
@@ -59,4 +56,24 @@ function replaceSlide(category, postList){
     }
 
     $("."+category+" .card-slider .swiper .swiper-wrapper").append(result);
+}
+
+
+
+
+function searchFormSubmit(){
+    event.preventDefault(); //submit시 queryString이 모두 사라지게되는 것 방지
+    //https://ejolie.dev/posts/form-submission-algorithm 참고
+
+    let value = document.querySelector("#searchValue").value;
+
+    let url = new URLSearchParams(location.search);
+    url.set("search", "1,"+value);
+    url.set("page", 1);
+
+    if(value == null || value == ""){
+        url.delete("search");
+    }
+
+    window.location.href = "/item/list" + "?" + url;
 }

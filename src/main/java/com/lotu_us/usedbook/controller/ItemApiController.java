@@ -111,4 +111,13 @@ public class ItemApiController {
     }
 
 
+    /**
+     * 인덱스페이지
+     */
+    @GetMapping("/index")
+    public ResponseEntity index(@RequestParam(defaultValue = "10") int count){
+        Map<String, List> index = itemService.index(count);
+        return ResponseEntity.status(HttpStatus.OK).body(index);
+    }
+
 }
