@@ -15,6 +15,10 @@ public class Chat {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "chatroom_id")
+    private ChatRoom chatRoom;
+
+    @ManyToOne
     @JoinColumn(name = "sender_member_id")
     private Member sender;
 
@@ -30,9 +34,10 @@ public class Chat {
     private LocalDateTime createTime = LocalDateTime.now();
 
     @Builder
-    public Chat(Member sender, Member receiver, String message) {
+    public Chat(Member sender, Member receiver, String message, ChatRoom chatRoom) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.chatRoom = chatRoom;
     }
 }

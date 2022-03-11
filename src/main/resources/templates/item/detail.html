@@ -41,6 +41,8 @@
 
         .won:after { content:"원"; }
         .ea:after { content:"개"; }
+        .popover{ position:absolute; top:2.5em; left:2em; width:max-content; }
+        .popover2{ top:1.5em!important; left:0em; }
     </style>
 </head>
 <body>
@@ -60,7 +62,7 @@
 
         <div class="row">
             <div class="col">
-                작성자 : <span id="writer">작성자</span>
+                작성자 : <span id="writer" class="popoverPosition" onclick="popover(event, 'popover2')" style="cursor:pointer; position:relative;">작성자</span>
                 <span id="createTime">날짜</span>
             </div>
         </div>
@@ -167,5 +169,6 @@
 <script src="/js/item/detail.js"></script>
 <script src="/js/comment/comment.js"></script>
 <script src="/js/order/addOrderBasket.js"></script>
+<script src="/js/item/myChatDetail.js"></script>
 </body>
 </html>

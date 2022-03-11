@@ -31,8 +31,8 @@ public class DashboardController {
         return "dashboard/myOrders";
     }
 
-    @GetMapping({"/dashboard/myChat", "/dashboard/myChat/{receiverNickname}"})
-    public String myChat(@PathVariable(required = false) String receiverNickname){
+    @GetMapping({"/dashboard/myChat", "/dashboard/myChat/{roomId}/{nickname}"})
+    public String myChat(){
         return "dashboard/myChat";
     }
 }

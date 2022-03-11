@@ -265,7 +265,7 @@ function addComment(comment){
      <div class="commentWrap c${comment.id}">
          <div class="row commentRow" style="${margin}">
              <div class="mb-2">
-                  <i class="fas fa-user"></i> <span class="commentWriter">${comment.writer}</span>
+                  <i class="fas fa-user"></i> <span class="commentWriter" onclick="popover(event, '')" style="cursor:pointer;">${comment.writer}</span>
                   <span class="ms-3" style="font-size:0.7em;">${comment.createTime}</span>
               </div>
               <div class="mb-2 commentContent">${comment.content}</div>
