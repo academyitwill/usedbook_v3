@@ -128,8 +128,7 @@ public class OrderService {
      */
     private void minusItemStock(List<OrderItem> orderItemList) {
         for (OrderItem orderItem : orderItemList) {
-            int currentStock = orderItem.getItem().getStock();
-            orderItem.getItem().minusStock(currentStock);
+            orderItem.getItem().minusStock(orderItem.getCount());
         }
     }
 }

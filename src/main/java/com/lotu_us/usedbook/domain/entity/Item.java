@@ -137,7 +137,7 @@ public class Item {
     }
 
     public void minusStock(int currentStock) {
-        this.stock = currentStock -1;
+        this.stock = (this.stock - currentStock);
 
         if(this.stock == 0){
             changeSaleStatus(SaleStatus.COMPLETE);
