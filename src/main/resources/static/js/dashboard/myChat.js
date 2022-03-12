@@ -116,7 +116,7 @@ function nowTime(){
 
 
 function loadHistory(){
-    fetch("http://localhost:8080/api/chat/room/"+roomId, {
+    fetch("/api/chat/room/"+roomId, {
         method: "get"
     })
     .then((res) => res.json())

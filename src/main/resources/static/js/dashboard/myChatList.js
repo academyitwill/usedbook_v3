@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 function changeList(){
-    fetch("http://localhost:8080/api/chat/room/list", {
+    fetch("/api/chat/room/list", {
         method: "get"
     })
     .then((res) => res.json())
@@ -51,7 +51,7 @@ function changeListView(list){
 
 function addList(chat, active){
     let str = `
-    <a id="room${chat.roomId}" href="http://localhost:8080/dashboard/myChat/${chat.roomId}/${chat.otherNickname}">
+    <a id="room${chat.roomId}" href="/dashboard/myChat/${chat.roomId}/${chat.otherNickname}">
         <div class="chat_list ${active}">
             <div class="chat_people">
                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
