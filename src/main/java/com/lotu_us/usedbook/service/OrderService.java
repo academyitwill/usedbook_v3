@@ -3,6 +3,7 @@ package com.lotu_us.usedbook.service;
 import com.lotu_us.usedbook.auth.PrincipalDetails;
 import com.lotu_us.usedbook.domain.dto.OrderBasketDTO;
 import com.lotu_us.usedbook.domain.dto.OrderDTO;
+import com.lotu_us.usedbook.domain.entity.Member;
 import com.lotu_us.usedbook.domain.entity.Order;
 import com.lotu_us.usedbook.domain.entity.OrderItem;
 import com.lotu_us.usedbook.repository.ItemRepository;
@@ -61,8 +62,17 @@ public class OrderService {
                 .payment(orderDTO.getPayment()).build();
 
         Order save = orderRepository.save(order);
+
+        //주문한 상품ID는 장바구니에서 삭제
+        removeOrderItemInBasket(principalDetails.getMember(), orderItemList);
+
+        //해당 상품의 수량 감소
+        //해당 상품의 수량이 0이면 상품 상태 "판매완료"로 변경
+        minusItemStock(orderItemList);
+
         return save.getId();
     }
+
 
     /**
      * 주문 상세보기
@@ -100,5 +110,26 @@ public class OrderService {
         PageImpl<OrderDTO.ResponseList> list = new PageImpl<>(content, byMemberId.getPageable(), byMemberId.getTotalElements());
 
         return list;
+    }
+
+
+    /**
+     * 주문한 상품ID는 장바구니에서 삭제
+     */
+    private void removeOrderItemInBasket(Member member, List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            orderBasketRepository.deleteByMemberIdAndItemId(member.getId(), orderItem.getItem().getId());
+        }
+    }
+
+    /**
+     * 해당 상품의 수량 감소
+     * 해당 상품의 수량이 0이면 상품 상태 "판매완료"로 변경
+     */
+    private void minusItemStock(List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            int currentStock = orderItem.getItem().getStock();
+            orderItem.getItem().minusStock(currentStock);
+        }
     }
 }

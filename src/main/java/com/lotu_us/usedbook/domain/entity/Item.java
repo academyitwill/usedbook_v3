@@ -135,4 +135,16 @@ public class Item {
     public void removeLikeCount(int currentCount) {
         this.likeCount = currentCount - 1;
     }
+
+    public void minusStock(int currentStock) {
+        this.stock = currentStock -1;
+
+        if(this.stock == 0){
+            changeSaleStatus(SaleStatus.COMPLETE);
+        }
+    }
+
+    public void changeSaleStatus(SaleStatus saleStatus){
+        this.saleStatus = saleStatus;
+    }
 }
