@@ -148,9 +148,9 @@ public class MemberService {
         //임시 비밀번호
         UUID uid = UUID.randomUUID();
         String tempPassword = uid.toString().substring(0,10) + "p2$";
+        customMailSender.sendFindPasswordMail(memberDTO, tempPassword);
+
         tempPassword = bCryptPasswordEncoder.encode(tempPassword);
         member.changePassword(tempPassword);
-
-        customMailSender.sendFindPasswordMail(memberDTO, tempPassword);
     }
 }
