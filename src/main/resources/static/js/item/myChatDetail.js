@@ -27,12 +27,12 @@ function goChat(nickname){
     }
 
     let roomId = 0;
-    fetch("http://localhost:8080/api/chat/"+nickname, {
+    fetch("/api/chat/"+nickname, {
         method: "post"
     })
     .then((res) => res.json())
     .then((json) => {
         roomId = json;
-        window.location.replace("http://localhost:8080/dashboard/myChat/"+roomId+"/"+nickname);
+        window.location.replace("/dashboard/myChat/"+roomId+"/"+nickname);
     });
 }
