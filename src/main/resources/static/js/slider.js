@@ -1,5 +1,3 @@
-const baseUrl = window.location.pathname;   //posts    //posts/novel
-
 var cardSliders = new Map();
 function initCardSlider(){
     $('.card-slider').each(function(i) {
@@ -63,8 +61,9 @@ const thumbSlider = {
     },
     addSlide:function(blobsrc){
         var lastIndex = files.map.size-1;
+        var url = window.location.pathname;
         var removeFileIcon = "";
-        if(baseUrl.includes("write") || baseUrl.includes("edit")){
+        if(url.includes("write") || url.includes("edit")){
             removeFileIcon = `<div class="remove-slide" onclick="fileRemove(event)"><i class="fas fa-times"></i></div>`;
         }
 
