@@ -24,7 +24,6 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
 public class JpaTest {
     @Autowired private MemberRepository memberRepository;
     @Autowired private ItemService itemService;

@@ -28,13 +28,13 @@ class MemberApiControllerTest {
     void join_Success() throws Exception {
         //given
         MemberDTO.Join memberDTO = MemberDTO.Join.builder()
-                .nickname("12").password("12").email("12@12").build();
+                .nickname("12").password("pwd123@").email("12@12.com").build();
 
         String str = objectMapper.writeValueAsString(memberDTO);
 
         //when //then
         mock.perform(
-                post("/api/member/join").content(str)
+                post("/api/member").content(str)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
@@ -52,24 +52,15 @@ class MemberApiControllerTest {
 
         //when //then
         mock.perform(
-                post("/api/member/join").content(str)
+                post("/api/member").content(str)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[?(@.cause == 'nickname')]message").isNotEmpty())
-        .andExpect(jsonPath("$.[?(@.cause == 'password')]message").isNotEmpty())
+//        .andExpect(jsonPath("$.[?(@.cause == 'nickname')]message").isNotEmpty())
+//        .andExpect(jsonPath("$.[?(@.cause == 'password')]message").isNotEmpty())
         .andExpect(jsonPath("$.[?(@.cause == 'email')]message").isNotEmpty())
         .andDo(print());
-    }
 
-    @Test
-    @DisplayName("update nickname 실패 - pathvariable validation 불만족")
-    void update_Fail() throws Exception {
-        //when //then
-        mock.perform(
-                put("/api/member/update/1/nickname/OOOOOOOOOOA")
-        ).andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[?(@.cause == 'url-params')]message").isNotEmpty())
-        .andDo(print());
+        //email을 가장 먼저 검증하고 결과에 맞지않으면 return함
     }
 }
