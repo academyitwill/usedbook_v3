@@ -1,3 +1,5 @@
+const baseUrl = window.location.pathname;   //posts    //posts/novel
+
 var cardSliders = new Map();
 function initCardSlider(){
     $('.card-slider').each(function(i) {
@@ -61,11 +63,14 @@ const thumbSlider = {
     },
     addSlide:function(blobsrc){
         var lastIndex = files.map.size-1;
+        var removeFileIcon = "";
+        if(baseUrl.includes("write") || baseUrl.includes("edit")){
+            removeFileIcon = `<div class="remove-slide" onclick="fileRemove(event)"><i class="fas fa-times"></i></div>`;
+        }
+
         this.top.addSlide(lastIndex, `
             <div class="swiper-slide">
-                <!--/* 파일 삭제 */-->
-                <div class="remove-slide" onclick="fileRemove(event)"><i class="fas fa-times"></i></div>
-                <!--/* 파일 삭제 */-->
+                ${removeFileIcon}
                 <img src="${blobsrc}" />
             </div>
         `);
