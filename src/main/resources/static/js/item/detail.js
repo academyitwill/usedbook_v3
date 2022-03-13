@@ -45,7 +45,7 @@ function replacePost(post){
             <a href="#" onclick="deletePost()">삭제</a>
         `;
     }
-    if(post.saleStatus == "판매완료"){
+    if(post.saleStatus == "판매완료" && post.memberIsSeller == false){
         document.querySelector("#postMenu").innerHTML = "";
     }
 
