@@ -40,10 +40,8 @@ function deleteBasket(postId, event){
         url: "/api/basket/item/"+postId,
         type: "delete",
         success: function(data){
-             if(data > 0){
-                $(event.target).parents("tr").remove();
-                changeTotalPrice();
-            }
+             $(event.target).parents("tr").remove();
+             changeTotalPrice();
         },
         error: function(error){
             alert(error.responseJSON.message);
