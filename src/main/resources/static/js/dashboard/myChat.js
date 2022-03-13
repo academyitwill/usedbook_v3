@@ -41,6 +41,11 @@ function connectStomp(){
                 changeListContent(message, time);
             }
 
+            if(chatRoomIdArr.includes(roomId) == false){    //새로 추가된 메시지라면
+                changeList();
+            }
+
+
             //스크롤 맨 아래로
             document.querySelector(".msg_history").scrollTop = document.querySelector(".msg_history").scrollHeight;
         });
