@@ -42,7 +42,7 @@ function changeListView(list){
     if(newRoom == true){
         let temp = {
             roomId : roomId,
-            otherNickname : yourNickname,
+            otherNickname : decodeURI(yourNickname),
             recentMessage : "",
             recentTime : ""
         }
