@@ -18,6 +18,9 @@ let client = Stomp.over(sock);
 ws = client;
 client.debug = null;    //콘솔에 디버그 출력 안함
 
+let chatRoomIdArr = [];
+//push는 myChatList.js에서 해줌
+
 function connectStomp(){
     ws.connect({}, function(){
         console.log("connection open");
@@ -37,6 +40,11 @@ function connectStomp(){
                 receive(senderNickname, message, time);
                 changeListContent(message, time);
             }
+
+            if(chatRoomIdArr.includes(roomId) == false){    //새로 추가된 메시지라면
+                changeList();
+            }
+
 
             //스크롤 맨 아래로
             document.querySelector(".msg_history").scrollTop = document.querySelector(".msg_history").scrollHeight;

@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
     changeList();
 });
 
+
 function changeList(){
     fetch("/api/chat/room/list", {
         method: "get"
@@ -23,6 +24,8 @@ function changeListView(list){
 
     //active_chat 클래스 추가 : 현재 채팅창
     list.forEach((chat) => {
+        chatRoomIdArr.push(chat.roomId);
+
         let active = "";
         if(roomId == chat.roomId){
             active = "active_chat";
