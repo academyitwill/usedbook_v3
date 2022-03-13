@@ -25,7 +25,7 @@ function connectStomp(){
     ws.connect({}, function(){
         console.log("connection open");
 
-        ws.subscribe("/api/chat/receive/room/"+roomId+"/"+myNickname, function(event){
+        ws.subscribe("/api/chat/receive/room/"+roomId+"/"+encodeURI(myNickname), function(event){
             let data = JSON.parse(event.body);
             let senderNickname = data.senderNickname;
             let message = data.message;

@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +31,10 @@ public class ChatService {
      */
     public ChatDTO.Receive save(Long roomId, ChatDTO.Send chatDTO, String nickname) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
-        Member receiver = memberRepository.findByNickname(nickname).orElse(null);
-        Member sender = memberRepository.findByNickname(chatDTO.getSenderNickname()).orElse(null);
+        String dNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        String dSenderNick = URLDecoder.decode(chatDTO.getSenderNickname(), StandardCharsets.UTF_8);
+        Member receiver = memberRepository.findByNickname(dNickname).orElse(null);
+        Member sender = memberRepository.findByNickname(dSenderNick).orElse(null);
 
         Chat chat = Chat.builder()
                 .sender(sender)
@@ -47,7 +52,8 @@ public class ChatService {
      */
     public Long createRoom(PrincipalDetails principalDetails, String nickname) {
         Member member = principalDetails.getMember();
-        Member otherMember = memberRepository.findByNickname(nickname).orElse(null);
+        String dNickname = URLDecoder.decode(nickname, StandardCharsets.UTF_8);
+        Member otherMember = memberRepository.findByNickname(dNickname).orElse(null);
         Chat chat = chatRepository.findByReceiverAndSender(member.getId(), otherMember.getId()).orElse(null);
 
         if(chat == null){
