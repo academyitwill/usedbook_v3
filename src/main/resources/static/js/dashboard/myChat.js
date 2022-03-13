@@ -18,6 +18,9 @@ let client = Stomp.over(sock);
 ws = client;
 client.debug = null;    //콘솔에 디버그 출력 안함
 
+let chatRoomIdArr = [];
+//push는 myChatList.js에서 해줌
+
 function connectStomp(){
     ws.connect({}, function(){
         console.log("connection open");
@@ -41,6 +44,15 @@ function connectStomp(){
             //스크롤 맨 아래로
             document.querySelector(".msg_history").scrollTop = document.querySelector(".msg_history").scrollHeight;
         });
+
+        //새로운 채팅 열리면 리스트 업데이트
+        ws.subscribe("/api/chat/receive/"+myNickname, function(event){
+            let data = JSON.parse(event.body);
+            if(chatRoomIdArr.includes(roomId) == false){    //새로 추가된 메시지라면
+                changeList();
+            }
+        });
+
     });
 
 }

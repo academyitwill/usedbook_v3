@@ -19,6 +19,8 @@ public class ChatDTO {
     @Getter
     @ToString
     public static class Receive{
+        private Long roomId;
+        private String receiverNickname;
         private String senderNickname;
         private String message;
         private String sendTime;
@@ -26,6 +28,8 @@ public class ChatDTO {
 
     public static ChatDTO.Receive entityToDTO(Chat chat){
         Receive receive = new Receive();
+        receive.roomId = chat.getChatRoom().getId();
+        receive.receiverNickname = chat.getReceiver().getNickname();
         receive.senderNickname = chat.getSender().getNickname();
         receive.message = chat.getMessage();
         receive.sendTime = chat.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));

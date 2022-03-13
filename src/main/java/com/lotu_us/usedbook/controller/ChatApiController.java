@@ -35,6 +35,7 @@ public class ChatApiController {
     @MessageMapping("/room/{roomId}/{nickname}")  //StompConfig에 적힌 setApplicationDestinationPrefixes 제외해서 작성한다.
     public void message(@RequestBody ChatDTO.Send chatDTO, @DestinationVariable Long roomId, @DestinationVariable String nickname) throws Exception{
         ChatDTO.Receive receive = chatService.save(roomId, chatDTO, nickname);
+        template.convertAndSend("/api/chat/receive/"+receive.getReceiverNickname(), receive);
         template.convertAndSend("/api/chat/receive/room/"+roomId+"/"+nickname, receive);
         // StompConfig에 적힌 enableSimpleBroker 도 포함해서 작성해야한다.
     }
